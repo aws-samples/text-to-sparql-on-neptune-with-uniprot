@@ -1,0 +1,1052 @@
+---
+- question: Show me all transmembrane regions
+  SPARQL: |
+    SELECT  ?protein ?begin ?end
+    WHERE
+    {
+      ?protein  rdf:type     up:Protein ;
+                up:annotation  ?annotation .
+      ?annotation  rdf:type  up:Transmembrane_Annotation .
+      ?annotation up:range ?range .
+      ?range faldo:begin ?begin .
+      ?range faldo:end ?end .
+    }
+- question: Select all taxa from the UniProt taxonomy
+  SPARQL: |
+    SELECT ?taxon
+    WHERE
+    {
+      ?taxon a up:Taxon .
+    }
+
+- question: Select all bacterial taxa and their scientific names from the UniProt taxonomy.
+  SPARQL: |
+    SELECT ?taxon ?name
+    WHERE
+    {
+        ?taxon a up:Taxon .
+        ?taxon up:scientificName ?name .
+        ?taxon rdfs:subClassOf taxon:2 .
+    }
+
+- question: Select all UniProt entries, and their organism and amino acid sequences (including isoforms), for _E. coli K12_ and all its strains
+  SPARQL: |
+    SELECT ?protein ?organism ?isoform ?aa_sequence
+    WHERE
+    {
+        ?protein a up:Protein .
+        ?protein up:organism ?organism .
+        ?organism rdfs:subClassOf taxon:83333 .
+        ?protein up:sequence ?isoform .
+        ?isoform rdf:value ?aa_sequence .
+    }
+
+- question: Select the UniProt entry with the mnemonic 'A4_HUMAN'
+  SPARQL: |
+    SELECT ?protein
+    WHERE
+    {
+        ?protein a up:Protein .
+        ?protein up:mnemonic 'A4_HUMAN'
+    }
+
+- question: Select a mapping of UniProt to PDB entries using the UniProt cross-references to the PDB database
+  SPARQL: |
+    SELECT ?protein ?db
+    WHERE
+    {
+        ?protein a up:Protein .
+        ?protein rdfs:seeAlso ?db .
+        ?db up:database <http://purl.uniprot.org/database/PDB>
+    }
+
+- question: Select all cross-references to external databases of the category '3D structure databases' of UniProt entries that are classified with the keyword 'Acetoin biosynthesis (KW-0005)'
+  SPARQL: |
+    SELECT DISTINCT ?link
+    WHERE
+    {
+        ?protein a up:Protein .
+        ?protein up:classifiedWith keywords:5 .
+        ?protein rdfs:seeAlso ?link .
+        ?link up:database ?db .
+        ?db up:category '3D structure databases'
+    }
+
+- question: Select reviewed UniProt entries (Swiss-Prot), and their recommended protein name, that have a preferred gene name that contains the text 'DNA'
+  SPARQL: |
+    SELECT ?protein ?name
+    WHERE
+    {
+        ?protein a up:Protein .
+        ?protein up:reviewed true .
+        ?protein up:recommendedName ?recommended .
+        ?recommended up:fullName ?name .
+        ?protein up:encodedBy ?gene .
+        ?gene skos:prefLabel ?text .
+        FILTER CONTAINS(?text, 'DNA')
+    }
+
+- question: Select the preferred gene name and disease annotation of all human UniProt entries that are known to be involved in a disease
+  SPARQL: |
+    SELECT ?name ?text
+    WHERE
+    {
+        ?protein a up:Protein .
+        ?protein up:organism taxon:9606 .
+        ?protein up:encodedBy ?gene .
+        ?gene skos:prefLabel ?name .
+        ?protein up:annotation ?annotation .
+        ?annotation a up:Disease_Annotation .
+        ?annotation rdfs:comment ?text
+    }
+
+- question: Select all human UniProt entries with a sequence variant that leads to a 'loss of function'
+  SPARQL: |
+    SELECT ?protein ?text
+    WHERE
+    {
+        ?protein a up:Protein .
+        ?protein up:organism taxon:9606 .
+        ?protein up:annotation ?annotation .
+        ?annotation a up:Natural_Variant_Annotation .
+        ?annotation rdfs:comment ?text .
+        FILTER (CONTAINS(?text, 'loss of function'))
+    }
+
+- question: Select all human UniProt entries with a sequence variant that leads to a tyrosine to phenylalanine substitution
+  SPARQL: |
+    SELECT ?protein ?annotation ?begin ?text
+    WHERE
+    {
+        ?protein a up:Protein ;
+                 up:organism taxon:9606 ;
+                 up:annotation ?annotation .
+        ?annotation a up:Natural_Variant_Annotation ;
+                    rdfs:comment ?text ;
+                    up:substitution ?substitution ;
+                    up:range/faldo:begin
+                           [ faldo:position ?begin ;
+                             faldo:reference ?sequence ] .
+        ?sequence rdf:value ?value .
+        BIND (substr(?value, ?begin, 1) as ?original) .
+        FILTER(?original = 'Y' && ?substitution = 'F') .
+    }
+
+- question: Select all UniProt entries with annotated transmembrane regions and the regions' begin and end coordinates on the canonical sequence; show me at most 10
+  SPARQL: |
+    SELECT ?protein ?begin ?end
+    WHERE
+    {
+        ?protein a up:Protein .
+        ?protein up:annotation ?annotation .
+        ?annotation a up:Transmembrane_Annotation .
+        ?annotation up:range ?range .
+        ?range faldo:begin/faldo:position ?begin .
+        ?range faldo:end/faldo:position ?end
+    }
+    LIMIT 10
+
+- question: Select all UniProt entries that were integrated on the 30th of November 2010
+  SPARQL: |
+    SELECT ?protein
+    WHERE
+    {
+        ?protein a up:Protein .
+        ?protein up:created '2010-11-30'^^xsd:date
+    }
+
+- question: Was any UniProt entry integrated on the 9th of January 2013?
+  SPARQL: |
+    ASK
+    WHERE
+    {
+        ?protein a up:Protein .
+        ?protein up:created '2013-01-09'^^xsd:date
+    }
+
+- question: Construct new triples of the type 'HumanProtein' from all human UniProt entries
+  SPARQL: |
+    CONSTRUCT
+    {
+        ?protein a up:HumanProtein .
+    }
+    WHERE
+    {
+        ?protein a up:Protein .
+        ?protein up:organism taxon:9606
+    }
+
+- question: Show me up to 30 triples that relate to the EMBL CDS entry AA089367.1
+  SPARQL: |
+    DESCRIBE <http://purl.uniprot.org/embl-cds/AAO89367.1>
+    LIMIT 30
+
+- question: Select all triples that relate to the taxon that describes Homo sapiens in the named graph for taxonomy
+  SPARQL: |
+    DESCRIBE taxon:9606
+    FROM <http://sparql.uniprot.org/taxonomy>
+
+- question: Select the average number of cross-references to the PDB database of UniProt entries that have at least one cross-reference to the PDB database
+  SPARQL: |
+    SELECT (AVG(?linksToPdbPerEntry) AS ?avgLinksToPdbPerEntry)
+    WHERE
+    {
+        SELECT ?protein (COUNT(DISTINCT ?db) AS ?linksToPdbPerEntry)
+        WHERE
+        {
+            ?protein a up:Protein .
+            ?protein rdfs:seeAlso ?db .
+            ?db up:database <http://purl.uniprot.org/database/PDB> .
+        }
+        GROUP BY ?protein ORDER BY DESC(?linksToPdbPerEntry)
+    }
+
+- question: Select the number of UniProt entries for each of the EC (Enzyme Commission) second level categories
+  SPARQL: |
+    SELECT ?enzyme (COUNT(?protein) as ?size)
+    WHERE
+    {
+        VALUES (?ecClass) {(ec:1.-.-.-) (ec:2.-.-.-) (ec:3.-.-.-) (ec:4.-.-.-) (ec:5.-.-.-) (ec:6.-.-.-) (ec:7.-.-.-) }
+        ?protein up:enzyme ?enzyme .
+        ?enzyme rdfs:subClassOf ?ecClass .
+    }
+    GROUP BY ?enzyme ORDER BY ?enzyme
+
+- question: "Find all Natural Variant Annotations if associated via an evidence tag to an article with a pubmed identifier. Return the protein's accession number, the annotation's accession number and the pubmed identifier"
+  SPARQL: |
+    SELECT
+        ?accession
+        ?annotation_acc
+        ?pubmed
+    WHERE
+    {
+        ?protein a up:Protein ;
+                 up:annotation ?annotation .
+        ?annotation a up:Natural_Variant_Annotation .
+        ?linkToEvidence rdf:object ?annotation ;
+                        up:attribution ?attribution .
+        ?attribution up:source ?source .
+        ?source a up:Journal_Citation .
+        BIND(SUBSTR(STR(?protein),33) AS ?accession)
+        BIND(IF(CONTAINS(STR(?annotation), "#SIP"), SUBSTR(STR(?annotation),33), SUBSTR(STR(?annotation),36))AS?annotation_acc)
+        BIND(SUBSTR(STR(?source),35) AS ?pubmed)
+    }
+
+- question: Find how often an article in pubmed was used in an evidence tag in a human protein (ordered by most used to least). Return the URI of the source and the number of attributions
+  SPARQL: |
+    SELECT
+        ?source
+        (COUNT(?attribution) AS ?attribitions)
+    WHERE
+    {
+        ?protein a up:Protein ;
+                 up:organism taxon:9606 ;
+                 up:annotation ?annotation .
+        ?linkToEvidence rdf:object ?annotation ;
+                        up:attribution ?attribution .
+        ?attribution up:source ?source .
+        ?source a up:Journal_Citation .
+    }
+    GROUP BY ?source ORDER BY DESC(COUNT(?attribution))
+
+- question: Find where disease related proteins are known to be located in the cell. Return the protein, the disease, the location inside the cell, and the cellular compartment
+  SPARQL: |
+    SELECT
+        ?protein
+        ?disease
+        ?location_inside_cell
+        ?cellcmpt
+    WHERE
+    {
+        ?protein up:annotation ?diseaseAnnotation , ?subcellAnnotation .
+        ?diseaseAnnotation up:disease/skos:prefLabel ?disease .
+        ?subcellAnnotation up:locatedIn/up:cellularComponent ?cellcmpt .
+        ?cellcmpt skos:prefLabel ?location_inside_cell .
+    }
+
+- question: For two accessions, Q6GZX4 and Q96375, find the GO term labels and group them into GO process, function and component
+  SPARQL: |
+    SELECT
+        (CONCAT(SUBSTR(STR(?protein), 33)) AS ?uniprot)
+        (GROUP_CONCAT(?celtype; separator=";") AS ?celtypes)
+        (GROUP_CONCAT(?biotype; separator=";") AS ?biotypes)
+        (GROUP_CONCAT(?moltype; separator=";") AS ?moltypes)
+    WHERE
+    {
+        VALUES (?ac) {("Q6GZX4") ("Q96375")}
+        BIND (IRI(CONCAT("http://purl.uniprot.org/uniprot/",?ac)) AS ?protein)
+        ?protein a up:Protein .
+        ?protein up:classifiedWith ?goTerm .
+        #Determine if the type is biological_process
+        OPTIONAL {
+            ?goTerm rdfs:subClassOf <http://purl.obolibrary.org/obo/GO_0008150>.
+            ?goTerm rdfs:label ?biotype .
+        }
+        #Determine if the type is cellular_component
+        OPTIONAL {
+            ?goTerm rdfs:subClassOf <http://purl.obolibrary.org/obo/GO_0005575>.
+            ?goTerm rdfs:label ?celtype .
+        }
+        #Determine if the type is molecular_function
+        OPTIONAL {
+            ?goTerm rdfs:subClassOf <http://purl.obolibrary.org/obo/GO_0003674> .
+            ?goTerm rdfs:label ?moltype .
+        }
+        #Filter out the uniprot keywords
+        FILTER(bound(?biotype) || bound(?celtype) || bound(?moltype))
+    } GROUP BY ?protein
+
+- question: How many reviewed entries (Swiss-Prot) are related to kinase activity?
+  SPARQL: |
+    SELECT
+        (COUNT(DISTINCT(?protein)) AS ?pc)
+    WHERE
+    {
+        ?protein rdf:type up:Protein ;
+                up:reviewed true  ;
+                up:organism taxon:9606 ;
+                up:classifiedWith|(up:classifiedWith/rdfs:subClassOf) GO:0016301 .
+    }
+
+- question: Find the release number of the uniprot data that is currently being queried
+  SPARQL: |
+    SELECT
+        ?version
+    FROM <http://sparql.uniprot.org/.well-known/void>
+    WHERE
+    {
+        [] <http://purl.org/pav/version> ?version
+    }
+
+- question: Find any uniprot entry which has a name 'HLA class I histocompatibility antigen, B-73 alpha chain'
+  SPARQL: |
+    SELECT ?protein ?anyKindOfName
+    WHERE
+    {
+      ?protein a up:Protein .
+      ?protein (up:recommendedName|up:alternativeName) ?structuredName .
+      ?structuredName ?anyKindOfName  "HLA class I histocompatibility antigen, B-73 alpha chain" .
+      ?anyKindOfName rdfs:subPropertyOf up:structuredNameType .
+    }
+
+- question: Find any uniprot entry, or an uniprot entries domain or component which has a name 'HLA class I histocompatibility antigen, B-73 alpha chain'
+  SPARQL: |
+    SELECT ?protein ?anyKindOfName
+    WHERE
+    {
+        ?protein a up:Protein .
+        ?protein (up:recommendedName|up:alternativeName)|((up:domain|up:component)/(up:recommendedName|up:alternativeName)) ?structuredName .
+        ?structuredName ?anyKindOfName  "HLA class I histocompatibility antigen, B-73 alpha chain" .
+        ?anyKindOfName rdfs:subPropertyOf up:structuredNameType .
+    }
+
+- question: Find all names associated with uniprot entry P05067, and if the name is associated with the entry it's domains or its components
+  SPARQL: |
+    SELECT
+      ?protein
+      ?anyKindOfName 
+      ?names 
+      ?partType
+    WHERE
+    {
+      BIND(<http://purl.uniprot.org/uniprot/P05067> AS ?protein)
+      ?protein a up:Protein .
+      {
+        ?protein (up:recommendedName|up:alternativeName) ?structuredName .
+      }
+        UNION
+      {
+        VALUES(?partType){(up:domain) (up:component)}
+        ?protein ?partType ?part .
+        ?part (up:recommendedName|up:alternativeName) ?structuredName .
+      }
+      ?structuredName ?anyKindOfName  ?names .
+      ?anyKindOfName rdfs:subPropertyOf up:structuredNameType .
+    }
+
+- question: Get the list of uniprot entries for the chromosome of proteome UP000000625
+  SPARQL: |
+    SELECT 
+      ?protein
+      ?proteome 
+    WHERE
+    {
+      ?protein a up:Protein ;
+               up:reviewed true ;
+               up:proteome ?proteome .
+      VALUES (?proteome) {(<http://purl.uniprot.org/proteomes/UP000000625#Chromosome>)}
+    }
+
+- question: Use ALLIE a service for Abbreviation / Long Form in Japanese and English to search in UniProt using Japanese.
+  SPARQL: |
+    SELECT
+        ?protein ?englishLabelStr
+    WHERE {
+        SERVICE<http://data.allie.dbcls.jp/sparql>{
+                ?x rdfs:label "アミロイド前駆体タンパク質"@ja ;
+                    rdfs:label ?englishLabel .
+                FILTER(lang(?englishLabel) = "en")
+        }
+        BIND (STR(?englishLabel) AS ?englishLabelStr)
+        ?protein a up:Protein .
+        {
+            ?protein (up:recommendedName|up:alternativeName) ?structuredName .
+        }
+        UNION
+        {
+              VALUES(?partType){(up:domain) (up:component)}
+                      ?protein ?partType ?part .
+              ?part (up:recommendedName|up:alternativeName) ?structuredName .
+        }
+        ?structuredName ?anyKindOfName  ?englishLabelStr .
+        ?anyKindOfName rdfs:subPropertyOf up:structuredNameType .
+    }
+
+- question: Find UniProt entries in Bordetella avium with more than one locus. Return the protein and a comma-separated list of the locus names
+  SPARQL: |
+    SELECT
+      ?protein 
+      (GROUP_CONCAT(?locusName; separator=',') AS ?locusNames)
+    WHERE 
+    { 
+      ?protein a up:Protein ;
+        up:organism taxon:360910 ;
+        up:encodedBy ?gene .
+      ?gene up:locusName ?locusName .
+    } 
+    GROUP BY ?protein 
+    HAVING (COUNT(?locusName) > 1)
+
+- question: Find UniParc records whose sequence point to the most database entries
+  SPARQL: |
+    SELECT ?sequence ?entries
+    WHERE
+    {
+        SELECT 
+            ?sequence 
+            (COUNT(?entry) AS ?entries)
+        WHERE
+        {
+            GRAPH <http://sparql.uniprot.org/uniparc> {
+                ?sequence up:sequenceFor ?entry .
+            }
+        } GROUP BY ?sequence
+    } ORDER BY DESC(?entries)
+
+- question: Find UniProtKB entries with more than 1 Topological domain annotation
+  SPARQL: |
+    SELECT 
+        ?protein 
+        (GROUP_CONCAT(?comment; separator=", ") AS ?comments)
+    WHERE
+    {
+        ?protein a up:Protein ;
+                up:annotation ?annotation . 
+        ?annotation rdf:type up:Topological_Domain_Annotation ;
+                rdfs:comment ?comment .
+    } 
+    GROUP BY ?protein 
+    HAVING (COUNT(?annotation) > 1)
+
+- question: Find the longest comment text associated with a UniProtKB Natural Variant Annotation. Return the annotation and the comment
+  SPARQL: |
+    SELECT 
+        ?annotation ?comment
+    WHERE {
+        ?annotation a up:Natural_Variant_Annotation ;
+            rdfs:comment ?comment . 
+    } 
+    ORDER BY DESC(STRLEN(?comment))
+    LIMIT 1
+
+- question: Find the co-occurence count of Topological Domain comment text in UniProtKB entries
+  SPARQL: |
+    SELECT 
+        ?comment1 
+        ?comment2 
+        (COUNT(?comment1) AS ?count1)
+    WHERE
+    {
+        ?protein a up:Protein ;
+                   up:annotation ?annotation1 , 
+                                 ?annotation2 . 
+        ?annotation1 rdf:type up:Topological_Domain_Annotation ;
+            rdfs:comment ?rawComment1 .
+        ?annotation2 rdf:type up:Topological_Domain_Annotation ;
+            rdfs:comment ?rawComment2 . 
+        BIND(IF(contains(?rawComment1, ';'), 
+                STRBEFORE(?rawComment1,';'), 
+                ?rawComment1) AS ?comment1)
+        BIND(IF(contains(?rawComment2, ';'), 
+                STRBEFORE(?rawComment2,';'), 
+                ?rawComment2) AS ?comment2)
+        FILTER(?annotation1 != ?annotation2)
+    } 
+    GROUP BY ?comment1 ?comment2 
+    ORDER BY DESC(COUNT(?comment1))
+    
+- question: Use UniProt clusters to find the similar proteins for UniProtKB entry P05067 and then sort them by UniRef cluster identity 
+  SPARQL: |
+    SELECT 
+        ?similar ?identity
+    FROM <http://sparql.uniprot.org/uniref>
+    FROM <http://sparql.uniprot.org/uniprot>
+    WHERE
+    {
+        BIND (uniprotkb:P05607 AS ?protein)
+        ?cluster up:member ?member ;
+                 up:member/up:sequenceFor ?protein;
+                 up:identity ?identity .
+        ?member up:sequenceFor ?similar .
+        FILTER(!sameTerm(?similar, ?protein))
+    } 
+    ORDER BY DESC(?identity)
+
+- question: Find the orthologous proteins for UniProtKB entry P05067 using the OrthoDB database
+  SPARQL: |
+    SELECT 
+      ?protein 
+      ?orthoGroup
+      ?scientificName 
+      ?functionComment 
+      ?prefferedGeneName 
+      ((STRLEN(?value) - ?medianLength) as ?deviationFromMedianLength)
+    WHERE
+    {
+      uniprotkb:P05067 a up:Protein ;
+            up:organism/up:scientificName ?scientificName ;
+            rdfs:seeAlso ?orthoGroup ;
+            up:encodedBy/skos:prefLabel ?prefferedGeneName ;
+                 up:sequence/rdf:value ?value .
+      OPTIONAL {
+         ?protein up:annotation ?functionAnnotation .
+         ?functionAnnotation a up:Function_Annotation ;
+                             rdfs:comment ?functionComment .
+      }
+      SERVICE<http://sparql.orthodb.org/sparql>{
+        ?orthoGroup orthodb:ogMedianProteinLength ?medianLength .
+        ?orthoGroup orthodb:hasMember ?xref .
+        ?xref orthodb:xref/orthodb:xrefResource uniprotkb:P05067 .
+      }
+    }
+
+- question: Find the human protein which contains an Epitope VSTQ, where T is a phosporylated threonine 
+  SPARQL: |
+    SELECT 
+      ?protein 
+      ?comment
+      ?begin
+      ?end 
+    WHERE
+    {
+      ?protein a up:Protein ;
+        up:organism taxon:9606 ; 
+        up:sequence ?sequence ;
+        up:annotation ?annotation .
+      ?annotation a up:Modified_Residue_Annotation ;
+        rdfs:comment ?comment ;
+        up:range ?range .
+      ?range 
+        faldo:begin [ faldo:position ?begin ; faldo:reference ?sequence ] ;
+        faldo:end [ faldo:position ?end ; faldo:reference ?sequence ] .
+      ?sequence rdf:value ?aaSequence .
+      FILTER (SUBSTR(?aaSequence, ?begin -2 , 4) = "VSTQ")     
+      FILTER (CONTAINS(?comment, "Phosphothreonine"))
+    }
+
+- question: For the human entry P05067 (Amyloid-beta precursor protein) find the gene start ends in WikiData
+  SPARQL: |
+    SELECT 
+        ?protein 
+        ?begin
+        ?end
+        ?chromosome
+        ?assembly
+    WHERE {
+        {
+            BIND(uniprotkb:P05067 AS ?proteinIRI)
+            BIND (SUBSTR(STR(?proteinIRI), STRLEN(STR(uniprotkb:))+1) AS ?protein)
+        }
+        SERVICE <https://query.wikidata.org/sparql> {
+            ?wp wdt:P352 ?protein ;
+                wdt:P702 ?wg . 
+            ?wg p:P644   ?wgss .
+            ?wgss ps:P644        ?begin ;
+              pq:P1057/wdt:P1813 ?chromosome ;
+              pq:P659/rdfs:label ?assembly .
+            ?wg p:P645 ?wgse .
+            ?wgse ps:P645        ?end ;
+              pq:P1057/wdt:P1813 ?chromosome ;
+              pq:P659/rdfs:label ?assembly .
+            FILTER(lang(?assembly) = "en")
+      } 
+    }
+
+- question: Retrieve entries and Catalytic activities in the reviewed (Swiss-Prot) section that have experimental evidences
+  SPARQL: |
+    SELECT  
+      ?protein
+      ?rhea 
+    WHERE {
+      # ECO 269 is experimental evidence
+      BIND (<http://purl.obolibrary.org/obo/ECO_0000269> as ?evidence)
+      GRAPH <http://sparql.uniprot.org/uniprot> {
+        ?protein up:reviewed true ;
+          up:annotation ?a ;
+          up:attribution ?attribution  .
+        ?a a up:Catalytic_Activity_Annotation ;
+          up:catalyticActivity ?ca .
+        ?ca up:catalyzedReaction ?rhea .
+
+        [] rdf:subject ?a ;
+          rdf:predicate up:catalyticActivity ;
+          rdf:object ?ca ;
+          up:attribution ?attribution .
+        ?attribution up:evidence ?evidence .
+      }
+    }
+
+- question: Retrieve human enzymes that metabolize sphingolipids and are annotated in ChEMBL
+  SPARQL: |
+    SELECT DISTINCT 
+      ?protein 
+      ?chemblEntry
+    WHERE {
+      SERVICE <https://sparql.rhea-db.org/sparql> {
+        ?rhea rdfs:subClassOf rh:Reaction ;
+          rh:side/rh:contains/rh:compound/rh:chebi/rdfs:subClassOf+ CHEBI:26739 .
+      }
+      ?ca up:catalyzedReaction ?rhea .
+      ?protein up:annotation/up:catalyticActivity ?ca ;
+        up:organism taxon:9606 ;
+        rdfs:seeAlso ?chemblEntry .
+      ?chemblEntry up:database <http://purl.uniprot.org/database/ChEMBL> .
+    }
+
+- question: Retrieve entries with sequences that are composed of fragments
+  SPARQL: |
+    SELECT DISTINCT 
+      ?protein
+    WHERE {
+      ?protein a up:Protein ;
+        up:sequence ?sequence .
+      MINUS { ?sequence up:fragment [] }
+    }
+
+- question: Connect patents cited in UniProtKB with those in the patent database at EPO via publication number
+  SPARQL: |
+    SELECT ?citation ?patent ?application ?applicationNo
+    WHERE
+    {
+      ?citation a up:Patent_Citation ;
+        skos:exactMatch ?patent .
+      FILTER(CONTAINS(STR(?patent), 'EP'))
+      BIND(SUBSTR(STR(?patent), 35) AS ?applicationNo)
+      SERVICE<https://data.epo.org/linked-data/query>{
+        ?application patent:publicationNumber ?applicationNo
+      }
+    }
+    
+- question: Connect patents cited in UniProtKB with those in the patent database at EPO via publication number, whose grant date is more than twenty years in the past
+  SPARQL: |
+    SELECT ?grantDate ?patent ?application ?applicationNo
+    WHERE
+    {
+        ?citation a up:Patent_Citation ;
+      skos:exactMatch ?patent .
+      BIND(SUBSTR(STR(?patent), 35) AS ?applicationNo)
+      BIND(SUBSTR(STR(?patent), 33, 2) AS ?countryCode)
+      SERVICE<https://data.epo.org/linked-data/query>{
+        ?publication patent:publicationNumber ?applicationNo ;
+                     patent:application ?application . 
+        ?application patent:grantDate ?grantDate .
+      }
+      BIND((year(now()) - 20) AS ?thisYearMinusTwenty)
+      BIND(year(?grantDate) AS ?grantYear)
+      FILTER(?grantYear < ?thisYearMinusTwenty)
+    } ORDER BY ?grantYear
+
+- question: Find the Rhea and Interpro combinations in UniProtKB entries
+  SPARQL: |
+    SELECT 
+        ?interpro
+        ?rhea
+    FROM <http://sparql.uniprot.org/uniprot>
+    WHERE 
+    {
+      ?protein up:reviewed true .
+      ?protein up:annotation ?annotation .
+      ?annotation up:catalyticActivity ?rhea .
+      ?protein rdfs:seeAlso ?interpro .
+      ?interpro up:database <http://purl.uniprot.org/database/InterPro> .
+    } ORDER BY ?rhea
+
+- question: Retrieve drugs that target human enzymes involved in sterol metabolism (federated query with WikiData and Rhea) 
+  SPARQL: |
+    SELECT 
+        DISTINCT
+            ?protein
+            ?proteinFullName
+            ?wikiChemical
+            ?wikiChemicalLabel
+            ?medicalConditionTreatedLabel
+    WHERE
+      {
+      # ChEBI: retrieve members of the ChEBI class ChEBI:15889 (sterol)
+      # Rhea: retrieve the reactions involving these ChEBI as participants
+      SERVICE <https://sparql.rhea-db.org/sparql> {
+        ?reaction rdfs:subClassOf  rh:Reaction ;
+              rh:status        rh:Approved ;
+              rh:side          ?reactionSide .
+        ?reactionSide
+              rh:contains      ?participant .
+        ?participant rh:compound  ?compound
+        { 
+          ?compound  rh:chebi  ?chebi .
+          ?chebi (rdfs:subClassOf)+ CHEBI:15889
+        } UNION {
+          ?compound  rh:chebi           ?chebi .
+          ?chebi2   rdfs:subClassOf     ?chebiRestriction .
+          ?chebiRestriction
+            a           owl:Restriction ;
+            owl:onProperty      chebihash:has_major_microspecies_at_pH_7_3 ;
+            owl:someValuesFrom  ?chebi .
+          ?chebi2 (rdfs:subClassOf)+ CHEBI:15889
+        }
+      }
+      # UniProt: retrieve the human (taxid:9606) enzymes catalyzing these Rhea reactions 
+      ?ca       up:catalyzedReaction  ?reaction .
+      ?a        up:catalyticActivity  ?ca .
+      ?proteinIRI  up:annotation         ?a ;
+            up:organism           taxon:9606 ;
+            up:recommendedName    ?proteinRecName .
+      ?proteinRecName
+            up:fullName           ?proteinFullName .
+      # Find drugs in wikidata that interact with the UniProt Proteins
+      BIND (SUBSTR(STR(?proteinIRI), STRLEN(STR(uniprotkb:))+1) AS ?protein)
+      SERVICE<https://query.wikidata.org/sparql> {
+        ?wp wdt:P352  ?protein . 
+        ?wikiChemical wdt:P129  ?wp . # Physically interacts with
+        ?wikiChemical rdfs:label ?wikiChemicalLabel .
+        ?wikiChemical wdt:P2175 ?wmc . # Medical conndition treated
+        ?wmc rdfs:label ?medicalConditionTreatedLabel .
+        FILTER(lang(?medicalConditionTreatedLabel) = 'en')
+        FILTER(lang(?wikiChemicalLabel) = 'en')
+      }
+    }
+
+- question: Retrieve images of 'Anas' (Ducks) from the European Environmental Agency databases (federated query)
+  SPARQL: |
+    SELECT 
+        ?taxon
+        ?ncbiTaxid
+        ?eunisTaxon
+        ?eunisName 
+        ?image
+    WHERE
+    {
+        GRAPH <http://sparql.uniprot.org/taxonomy>
+        {
+            ?taxon a up:Taxon .
+            # Taxon subclasses are materialized, do not use rdfs:subClassOf+
+            ?taxon rdfs:subClassOf taxon:8835 .
+            BIND(strafter(str(?taxon), 'onomy/') AS ?ncbiTaxid)
+        }
+        SERVICE <https://semantic.eea.europa.eu/sparql>
+        {
+            ?eunisTaxon a eunisSpecies:SpeciesSynonym ;
+               eunisSpecies:binomialName ?eunisName ;
+               eunisSpecies:sameSpeciesNCBI ?ncbiTaxid ;
+               <http://xmlns.com/foaf/0.1/depiction> ?image .
+        }
+    }
+
+- question: Retrieve the UniProt proteins, their catalyzed Rhea reactions, their encoding genes (Ensembl) and the anatomic entities where the genes are expressed (UBERON anatomic entites from Bgee expression data resource).
+  SPARQL: |
+    SELECT
+            DISTINCT 
+                ?protein
+                ?ensemblGene
+                ?reaction
+                ?anatomicEntityLabel
+                ?anatomicEntity
+    WHERE {
+      # federated query to Rhea enadpoint
+      {
+        SELECT DISTINCT ?reaction WHERE {
+          SERVICE <https://sparql.rhea-db.org/sparql> {
+            ?reaction rdfs:subClassOf rh:Reaction .
+            ?reaction rh:equation ?reactionEquation .
+            ?reaction rh:side ?reactionSide .
+            ?reactionSide rh:contains ?participant .
+            ?participant rh:compound ?compound .
+            # compound constraint (CHEBI:16113 == cholesterol)
+            ?compound rh:chebi CHEBI:16113 .
+          }
+        }
+      }
+      # taxonomy constraint (taxon:9606 == Homo sapiens)
+      ?protein up:organism taxon:9606 .
+      ?protein up:annotation ?a .
+      ?a a up:Catalytic_Activity_Annotation .
+      ?a up:catalyticActivity ?ca .
+      ?ca up:catalyzedReaction ?reaction .
+      ?protein rdfs:seeAlso / up:transcribedFrom ?ensemblGene .
+      # federated query to Bgee (expression data)
+      SERVICE <http://biosoda.expasy.org/rdf4j-server/repositories/bgeelight> {
+        ?gene genex:isExpressedIn ?anatomicEntity .
+        ?gene lscr:xrefEnsemblGene ?ensemblGene .
+        ?anatomicEntity rdfs:label ?anatomicEntityLabel .
+      }
+    }
+
+- question: Retrieve drugs that target human enzymes involved in sterol metabolism (federated query with Rhea and ChEMBL via IDSM/Elixir czech republic)
+  SPARQL: |
+    SELECT
+            DISTINCT  
+                ?protein 
+                ?proteinFullName 
+                ?activityType 
+                ?standardActivityValue 
+                ?standardActivityUnit 
+                ?chemblMolecule 
+                ?chemlbMoleculePrefLabel
+    WHERE
+      {
+      # ChEBI: retrieve members of the ChEBI class ChEBI:15889 (sterol)
+      # Rhea: retrieve the reactions involving these ChEBI as participants
+      SERVICE <https://sparql.rhea-db.org/sparql> {
+        ?reaction rdfs:subClassOf  rh:Reaction ;
+              rh:status        rh:Approved ;
+              rh:side          ?reactionSide .
+        ?reactionSide
+              rh:contains      ?participant .
+        ?participant rh:compound  ?compound
+        { 
+          ?compound  rh:chebi  ?chebi .
+          ?chebi (rdfs:subClassOf)+ CHEBI:15889
+        } UNION {
+          ?compound  rh:chebi           ?chebi .
+          ?chebi2   rdfs:subClassOf     ?chebiRestriction .
+          ?chebiRestriction
+            a           owl:Restriction ;
+            owl:onProperty      chebihash:has_major_microspecies_at_pH_7_3 ;
+            owl:someValuesFrom  ?chebi .
+          ?chebi2 (rdfs:subClassOf)+ CHEBI:15889
+        }
+      }
+      # UniProt: retrieve the human (taxid:9606) enzymes catalyzing these Rhea reactions 
+      ?ca       up:catalyzedReaction  ?reaction .
+      ?a        up:catalyticActivity  ?ca .
+      ?protein  up:annotation         ?a ;
+            up:organism           taxon:9606 ;
+            up:recommendedName    ?proteinRecName .
+      ?proteinRecName
+            up:fullName           ?proteinFullName .
+      # Find drugs in wikidata that interact with the UniProt Proteins
+      # ChEMBL: retrieve the corresponding targets and with drugs in clinical phase 4
+      # Via https://idsm.elixir-czech.cz/sparql/
+      SERVICE <https://idsm.elixir-czech.cz/sparql/endpoint/idsm> { 
+        ?activity a cco:Activity ;
+          cco:hasMolecule ?chemblMolecule ;
+          cco:hasAssay ?assay ;
+          cco:standardType ?activityType ;
+          cco:standardValue ?standardActivityValue ;
+          cco:standardUnits ?standardActivityUnit .
+        ?chemblMolecule cco:highestDevelopmentPhase ?highestDevelopmentPhase ;
+          rdfs:label ?chemblMoleculeLabel ;
+          skos:prefLabel ?chemlbMoleculePrefLabel .
+        FILTER (?highestDevelopmentPhase > 3)
+        ?assay cco:hasTarget ?target .
+        ?target cco:hasTargetComponent/cco:targetCmptXref ?protein .
+        ?protein a cco:UniprotRef .
+      }
+    }
+
+- question: Find mouse homologs in OMABrowser of human enzymes that catalyze reactions involving Sterols (CHEBI:15889). Federating with Rhea-DB and OMABrowser
+  SPARQL: |
+    SELECT
+      DISTINCT
+        ?chebi
+        ?reaction
+        ?humanProtein
+        ?mouseProtein
+        ?cluster 
+    WHERE {
+      SERVICE <https://sparql.rhea-db.org/sparql> {
+        ?reaction rdfs:subClassOf rh:Reaction .
+        ?reaction rh:side/rh:contains/rh:compound ?compound .
+        ?compound rh:chebi ?chebi .
+        ?chebi rdfs:subClassOf* CHEBI:15889
+      }
+      ?humanProtein up:organism taxon:9606 .
+      ?humanProtein up:annotation ?a .
+      ?a a up:Catalytic_Activity_Annotation .
+      ?a up:catalyticActivity ?ca .
+      ?ca up:catalyzedReaction ?reaction .
+      SERVICE  <https://sparql.omabrowser.org/sparql> {
+        ?cluster a orth:ParalogsCluster .
+        ?cluster orth:hasHomologousMember ?node1 , ?node2 .
+        ?node1 orth:hasHomologousMember* ?orthoProtein1 .
+        ?node2 orth:hasHomologousMember* ?orthoProtein2 .
+        ?orthoProtein1 lscr:xrefUniprot ?mouseProtein .
+        ?orthoProtein2 lscr:xrefUniprot ?humanProtein .
+        # inTaxon mouse
+        ?orthoProtein1 orth:organism/<http://purl.obolibrary.org/obo/RO_0002162> taxon:10090 . 
+      }
+    }
+
+- question: Proteins with annotated binding sites for ligands similar to heme
+  SPARQL: |
+    SELECT 
+      ?protein
+      ?mnemonic
+      ?proteinName
+      ?ligandSimilarityScore
+      ?ligand
+    WHERE {
+      SERVICE <https://idsm.elixir-czech.cz/sparql/endpoint/chebi> {
+        ?ssc sachem:compound ?ligand; 
+          sachem:score ?ligandSimilarityScore ;
+          sachem:similaritySearch ?sss .
+            # Smiles of Heme
+        ?sss    sachem:query "CC1=C(CCC([O-])=O)C2=[N+]3C1=Cc1c(C)c(C=C)c4C=C5C(C)=C(C=C)C6=[N+]5[Fe-]3(n14)n1c(=C6)c(C)c(CCC([O-])=O)c1=C2";
+          sachem:cutoff "8e-1"^^xsd:double ;
+          sachem:aromaticityMode sachem:aromaticityDetect ;
+          sachem:similarityRadius 1 ;
+          sachem:tautomerMode sachem:ignoreTautomers .
+      }
+      ?protein up:mnemonic ?mnemonic ;
+        up:recommendedName/up:fullName ?proteinName ;
+        up:annotation ?annotation .
+      ?annotation a up:Binding_Site_Annotation ;
+          up:ligand/rdfs:subClassOf ?ligand .
+    }
+    ORDER BY DESC(?ligandSimilarityScore)
+
+- question: Number of proteins with annotated binding sites for metals or metal sulfur clusters (and experimental evidence for the binding) 
+  SPARQL: |
+    SELECT
+      ?ligand
+      ?ligandName 
+      (COUNT(DISTINCT ?protein) as ?entries)
+    WHERE {
+       ?protein up:annotation ?annotation .
+
+       VALUES ?evs { obo:ECO_0000269 obo:ECO_0007744 } .
+       VALUES ?chebids { CHEBI:25213 CHEBI:25214 } .
+       ?st rdf:subject ?protein ; 
+           rdf:predicate up:annotation ; 
+           rdf:object ?annotation ;
+           up:attribution/up:evidence ?evs .
+       ?annotation up:ligand/rdfs:subClassOf ?ligand .
+       ?ligand rdfs:subClassOf+ ?chebids ;
+         rdfs:label ?ligandName .
+    }
+    GROUP BY ?ligand ?ligandName
+    ORDER BY DESC(?entries)
+
+- question: Select Enzymes that have Ligands that have a known allosteric effect
+  SPARQL: |
+    SELECT
+      ?protein
+      ?ligandName 
+      ?ligandNote
+      ?chebi
+    WHERE {
+       ?protein up:annotation ?annotation .
+       ?annotation a up:Binding_Site_Annotation . 
+       ?annotation up:ligand ?ligand .
+       ?ligand rdfs:comment ?ligandNote ;
+         rdfs:subClassOf ?chebi ;
+         rdfs:label ?ligandName .
+       FILTER(REGEX(?ligandNote, "allosteric", "i"))
+    }
+
+- question: Map PDB identifiers plus chains to UniProt
+  SPARQL: |
+    SELECT
+      ?pdbId ?chain ?pdbChain ?uniprot
+    WHERE
+    {
+      # A space separated list of pairs of PDB identifiers and the chain code.
+      VALUES(?pdbId ?pdbChain) { ('6VXC' 'A') ('1BG3' 'B') }
+      # Make an IRI out of the pdbId
+      BIND(iri(concat('http://rdf.wwpdb.org/pdb/', ?pdbId)) AS ?pdb)
+      # Map to UniProt entries
+      ?uniprot rdfs:seeAlso ?pdb .
+      ?pdb up:database <http://purl.uniprot.org/database/PDB> ;
+           up:chainSequenceMapping ?chainSm .
+      ?chainSm up:chain ?chainsPlusRange .
+      # Extract the list of chains from the text representation.
+      BIND(STRBEFORE(?chainsPlusRange, '=') AS ?chain)
+      # Filter those that match.
+      FILTER(CONTAINS(?chain, ?pdbChain))
+    }
+
+- question: Map UniProt to HGNC identifiers and Symbols
+  SPARQL: |
+    SELECT
+      ?uniprot
+      ?hgnc
+      ?hgncSymbol
+    WHERE
+    {
+      # A space separated list of UniProt primary accessions.
+      VALUES (?acc) {('P05067') ('P00750')}
+      BIND(iri(concat(str(uniprotkb:), ?acc)) AS ?uniprot)
+      ?uniprot rdfs:seeAlso ?hgnc .
+      ?hgnc up:database <http://purl.uniprot.org/database/HGNC> ;
+           rdfs:comment ?hgncSymbol .
+    }
+
+- question: Count all isoforms for a given proteome
+  SPARQL: |
+    PREFIX proteome:<http://purl.uniprot.org/proteomes/>
+    SELECT
+      (COUNT(DISTINCT ?sequence) AS ?allIsoforms)
+    WHERE
+    {
+      ?protein up:reviewed true .
+      ?protein up:organism taxon:9606 .
+      ?protein up:sequence ?sequence .
+      ?protein up:proteome/^skos:narrower proteome:UP000005640 .
+    }
+
+- question: Show me all proteins that are located in the mitochondiron
+  SPARQL: |
+    SELECT ?protein
+    WHERE {
+        ?protein a up:Protein .
+        ?protein up:annotation ?subcellAnnotation .
+        ?subcellAnnotation up:locatedIn/up:cellularComponent ?cellcmpt .
+        ?cellcmpt skos:prefLabel ?location_inside_cell .
+        FILTER(REGEX(?location_inside_cell, "mitochondrion", "i"))
+    }
+
+- question: I'd like to see the entries for all proteins encoded by the gene PY17X_0934600
+  SPARQL: |
+    SELECT ?protein
+    WHERE {
+        ?protein a up:Protein ;
+            up:encodedBy/skos:prefLabel "PY17X_0934600" .
+    }
+
+- question: How many citations are there for papers by A. Bairoch?
+  SPARQL: |
+    SELECT (count(distinct ?citation) as ?numCitations)
+    WHERE
+    {
+      ?protein a up:Protein ;
+          up:citation ?citation .
+      ?citation up:author "Bairoch A." .
+    }
+- question: Show me all citations by A. Bairoch
+  SPARQL: |
+    SELECT distinct ?citation
+    WHERE
+    {
+      ?protein a up:Protein ;
+          up:citation ?citation .
+      ?citation up:author "Bairoch A." .
+    }

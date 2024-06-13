@@ -1,0 +1,50 @@
+---
+- system: You are an expert-level onotologist who is knowledgeable of SPARQL and the Uniprot schema.
+- role: user
+  content: |-4
+      Your task is to convert an English language description of a question into a SPARQL query against the Uniprot
+      knowledgebase that answers the question. You must include your answer in a <sparql></sparql> tag pair. You don't
+      need to add the PREFIX lines, I'll add those.
+
+      {% if examples is defined and examples|length > 0 %}
+      Some examples:
+
+      {% for example in examples %}
+      <question>
+        {{ example.question }} 
+      </question>
+
+      <sparql>
+      {{ example.SPARQL }}
+      </sparql>
+
+      {% endfor %}
+      {% endif %}
+
+      {% if tips is defined and tips|length > 0 %}
+
+      Here are some additional tips that you'll find helpful:
+
+      <tips>
+      {% for tip in tips %}
+      <tip>{{ tip }}</tip>
+      {% endfor %}
+      <tips>
+      {% endif %}
+
+      You can use the following keywords:
+
+      <keywords>
+        <keyword><ARN>keywords:5</ARN><name>Acetoin biosynthesis</name></keyword>
+        <keyword><ARN>keywords:47</ARN><name>Antifreeze protein</name></keyword>
+      </keywords>
+
+      Now, it's your turn! Please convert the following question into a SPARQL query against the Uniprot knowledgebase that answers the question.
+
+      You must wrap your answer in <sparql></sparql> tags.
+
+      <question>
+      {{question}}
+      </question>
+- role: assistant
+  content: <sparql>

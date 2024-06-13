@@ -1,0 +1,40 @@
+- To find the name of a GO class use rdfs:label
+# These should be expanded out:
+- The bacterial taxa is taxon:2
+- Bordetella avium is taxon:360910
+- The scientific name of a taxa is up:scientificName
+- Use rdfs:subClassOf to refer to subclasses of a taxa
+- 'To match against a GO class''s label you can use a regex, like this: FILTER(REGEX(?label, "^text to match", "i"))'
+- "If the result contains a GO term, then also include each GO term's name in the output of the SELECT statement"
+- The category of an external database is encoded as up:category where the object is the name of the category
+- Protein annotations use up:range to indicate the part of the sequence being annotated
+- Variants are indicated by using up:substitution on the annotation; the object of up:annotation is a string, typically of length 1, that is the new amino acid
+- To see the subsitution causing a variant you must use the up:range on the annotation
+- 'The faldo: ontology uses faldo:begin to indicate the start of a range, faldo:position indicates the starting position in the sequence and faldo:reference refers to the actual sequence'
+- The ASK form is like SELECT except it tells you if any solutions exist
+- URIs for EMBL CDS entries look like <http://purl.uniprot.org/embl-cds/XX.YY> where XX.YY is the CDS entry id
+- "Enzymes are classified using ec:X.Y.Z.P where X, Y, Z or P can be a dash ('-') to indicate a superclass"
+- 'For ec: numbers, the X in ec:X.Y.Z.P is called the second-level category'
+- 'The ec:number of an enzyme is indicated by rdfs:subClassOf'
+- 'Proteins that are enzymes have an up:enzyme property to an ?enzyme object. This ?enzyme object has an rdfs:subClassOf property that points to the ec: class'
+- "In the URI for a protein, the part after the last '/' is the accession number. For example, the protein <http://purl.uniprot.org/uniprot/P03148> has accession number P03148"
+- "For an annotation, the accession number is the fragment of the URI. For example, the annotation <http://purl.uniprot.org/uniprot/P03148#SIPDB9E6FF9163342E6> has accession number SIPDB9E6FF9163342E6"
+- "For a source (an instance of up:Journal_Citation), the pubmed ID is the last part of the source's URI. For example, for the source <http://purl.uniprot.org/citations/10559327> the pubmed ID is 10559327"
+- 'The location inside a cell of a cellular compartment is indicated by skos:prefLabel'
+- 'To generate a uniprot URI, concatenate "http://purl.uniprot.org/uniprot/" and the accession number'
+- 'To refer to uniparc entries use the form GRAPH <http://sparql.uniprot.org/uniparc> { ... }'
+- sequence variants are represented as follows. The annotation is-a up:Natural_Variant_Annotation. The property up:annotation refers to the new value of the variant. The old value of the variant found as follows. First, the property up:range/falso_begin refers to the old sequence and the index in that sequence. Then, faldo:position gives the index of the new variant, and faldo:reference/rdf:value gives the sequence that we index into.
+- EMBL CDS entries have URIs that look as follows. If the CDS entry is <foo> then the URI is <http://purl.uniprot.org/embl-cds/foo>
+- 'EC (Enzyme Commission) categories are represented as ec:x.y.z.p where a "-" is used to indicate the superset of all the sub-categories. For example, ec:1.-.-.- represents ec:1.1.-.-, ec:1.2._._, etc.'
+- 'The IRIs for annotations come in two forms. The first is like this, <http://purl.uniprot.org/uniprot/P83549#SIP0DB7D53171472E13>, the accession number is the last part of the IRI: P83549#SIP0DB7D53171472E13. The second is like this, <http://purl.uniprot.org/annotation/VAR_000007>, and the accession number here is again the last part of the IRI: VAR_000007.'
+- From an annotation, you can find its attribution via an rdf:Statement whose rdf:object is the annotation itself and whose up:attribution is the attribution.
+- To find the disease annotation for a protein, follow up:disease/skos:prefLabel.
+- To find the cellular component of a protein, follow up:locatedIn/up:cellularComponent, and then skos:prefLabel will give you the name of the component.
+- The GO entry 0008150 refers to biological processes.
+- The GO entry 0005575 refers to cellular components.
+- The GO entry 0003674 refers to molecular functions.
+- The GO entry 0016301 refers to kinase activity.
+- The proteins in a proteme, such as UP000000001, are indicated by the property up:proteome from the protein to <http://purl.uniprot.org/proteomes/UP000000001#Chromosome>.
+- The up:sequenceFor property associates database entries with UniParc sequences.
+- You can find the comments for an annotation via rdfs:comment.
+- The UniProt entries that comprise a cluster are indicated by up:member, from each entry up:sequenceFor gives you the protein.
