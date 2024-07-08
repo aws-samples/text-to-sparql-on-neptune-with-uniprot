@@ -4,14 +4,32 @@ This module contains code that is shared amongst the Jupyter notebooks.
 
 from typing import Callable
 import os
+import re
 import json
 from pathlib import Path
+from functools import partial
 
 import requests
 from botocore.exceptions import ClientError
 from botocore.awsrequest import AWSRequest
 from botocore.auth import SigV4Auth
 
+
+def create_bedrock_runner(bedrock_runtime,
+                          model_id: str,
+                          temperature: float) -> Callable:
+    return partial(run_bedrock,
+                   bedrock_runtime=bedrock_runtime,
+                   model_id=model_id,
+                   temperature=temperature)
+
+def normalize_ws(s: str) -> str:
+    """
+    >>> normalize_ws(" a  b c  ")
+    'a b c'
+    """
+    return re.sub(r"\s+", " ", s).strip()
+    
 
 def get_neptune_env(var: str) -> str:
     """
