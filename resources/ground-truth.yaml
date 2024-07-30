@@ -11,6 +11,7 @@
       ?range faldo:begin ?begin .
       ?range faldo:end ?end .
     }
+
 - question: Select all taxa from the UniProt taxonomy
   SPARQL: |
     SELECT ?taxon
@@ -308,38 +309,6 @@
                 up:classifiedWith|(up:classifiedWith/rdfs:subClassOf) GO:0016301 .
     }
 
-- question: Find the release number of the uniprot data that is currently being queried
-  SPARQL: |
-    SELECT
-        ?version
-    FROM <http://sparql.uniprot.org/.well-known/void>
-    WHERE
-    {
-        [] <http://purl.org/pav/version> ?version
-    }
-
-- question: Find any uniprot entry which has a name 'HLA class I histocompatibility antigen, B-73 alpha chain'
-  SPARQL: |
-    SELECT ?protein ?anyKindOfName
-    WHERE
-    {
-      ?protein a up:Protein .
-      ?protein (up:recommendedName|up:alternativeName) ?structuredName .
-      ?structuredName ?anyKindOfName  "HLA class I histocompatibility antigen, B-73 alpha chain" .
-      ?anyKindOfName rdfs:subPropertyOf up:structuredNameType .
-    }
-
-- question: Find any uniprot entry, or an uniprot entries domain or component which has a name 'HLA class I histocompatibility antigen, B-73 alpha chain'
-  SPARQL: |
-    SELECT ?protein ?anyKindOfName
-    WHERE
-    {
-        ?protein a up:Protein .
-        ?protein (up:recommendedName|up:alternativeName)|((up:domain|up:component)/(up:recommendedName|up:alternativeName)) ?structuredName .
-        ?structuredName ?anyKindOfName  "HLA class I histocompatibility antigen, B-73 alpha chain" .
-        ?anyKindOfName rdfs:subPropertyOf up:structuredNameType .
-    }
-
 - question: Find all names associated with uniprot entry P05067, and if the name is associated with the entry it's domains or its components
   SPARQL: |
     SELECT
@@ -391,22 +360,6 @@
     } 
     GROUP BY ?protein 
     HAVING (COUNT(?locusName) > 1)
-
-- question: Find UniParc records whose sequence point to the most database entries
-  SPARQL: |
-    SELECT ?sequence ?entries
-    WHERE
-    {
-        SELECT 
-            ?sequence 
-            (COUNT(?entry) AS ?entries)
-        WHERE
-        {
-            GRAPH <http://sparql.uniprot.org/uniparc> {
-                ?sequence up:sequenceFor ?entry .
-            }
-        } GROUP BY ?sequence
-    } ORDER BY DESC(?entries)
 
 - question: Find UniProtKB entries with more than 1 Topological domain annotation
   SPARQL: |
