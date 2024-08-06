@@ -145,7 +145,6 @@
         ?range faldo:begin/faldo:position ?begin .
         ?range faldo:end/faldo:position ?end
     }
-    LIMIT 10
 
 - question: Select all UniProt entries that were integrated on the 30th of November 2010
   SPARQL: |
@@ -158,19 +157,16 @@
 
 - question: Was any UniProt entry integrated on the 9th of January 2013?
   SPARQL: |
-    ASK
+    SELECT ?protein
     WHERE
     {
         ?protein a up:Protein .
         ?protein up:created '2013-01-09'^^xsd:date
     }
 
-- question: Construct new triples of the type 'HumanProtein' from all human UniProt entries
+- question: Find proteins type 'HumanProtein' from all human UniProt entries
   SPARQL: |
-    CONSTRUCT
-    {
-        ?protein a up:HumanProtein .
-    }
+    SELECT ?protein  
     WHERE
     {
         ?protein a up:Protein .
@@ -179,13 +175,13 @@
 
 - question: Show me up to 30 triples that relate to the EMBL CDS entry AA089367.1
   SPARQL: |
-    DESCRIBE <http://purl.uniprot.org/embl-cds/AAO89367.1>
-    LIMIT 30
+    SELECT ?p ?o WHERE
+    { <http://purl.uniprot.org/embl-cds/AAO89367.1> ?p ?o }
 
 - question: Select all triples that relate to the taxon that describes Homo sapiens in the named graph for taxonomy
   SPARQL: |
-    DESCRIBE taxon:9606
-    FROM <http://sparql.uniprot.org/taxonomy>
+    SELECT ?p ?o WHERE
+    { taxon:9606 ?p ?o }
 
 - question: Select the average number of cross-references to the PDB database of UniProt entries that have at least one cross-reference to the PDB database
   SPARQL: |
@@ -385,7 +381,6 @@
             rdfs:comment ?comment . 
     } 
     ORDER BY DESC(STRLEN(?comment))
-    LIMIT 1
 
 - question: Find the co-occurence count of Topological Domain comment text in UniProtKB entries
   SPARQL: |
