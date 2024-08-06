@@ -101,7 +101,6 @@ AWS_REGION = get_neptune_env("AWS_REGION")
 USE_IAM_AUTH = GRAPH_NOTEBOOK_AUTH_MODE != "DEFAULT"
 NEPTUNE_ENDPOINT = f"https://{GRAPH_NOTEBOOK_HOST}:{GRAPH_NOTEBOOK_PORT}/sparql"
 
-
 def execute_sparql(query: str,
                    sagemaker_session,
                    crud_type: str = "query"):
@@ -156,3 +155,14 @@ def execute_sparql(query: str,
         print(f"CRUD type is *{crud_type}*")
         print(f"Here is the result:\n{response.text}\n")
         raise e
+        
+def write_sparql_res(folder_name, file_prefix, question, expected_sparql, actual_sparql, res):
+    res_record = {
+        'question': question, 
+        'expected_sparql': expected_sparql,
+        'actual_sparql': actual_sparql,
+        'res': res
+    }
+    with open(f"{folder_name}/{file_prefix}.json", 'w') as resfile: 
+        resfile.write(json.dumps(res_record, indent=3))
+
