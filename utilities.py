@@ -8,6 +8,8 @@ import re
 import json
 from pathlib import Path
 from functools import partial
+from typing import List, Union, Optional
+from typing import Any as JsonType
 
 import requests
 from botocore.exceptions import ClientError
@@ -38,7 +40,8 @@ def get_neptune_env(var: str) -> str:
     return os.popen(f"source ~/.bashrc ; echo ${var}").read().split("\n")[0]
 
 
-def run_bedrock(prompt: str,
+def run_bedrock(system: str,
+                messages: List,
                 temperature: float,
                 bedrock_runtime,
                 model_id: str) -> str:
@@ -62,6 +65,8 @@ def run_bedrock(prompt: str,
                 }
             ),
         )
+        
+        
         result = json.loads(response.get("body").read())
         output_list = result.get("content", [])
         return "".join(output["text"] for output in output_list
@@ -156,12 +161,13 @@ def execute_sparql(query: str,
         print(f"Here is the result:\n{response.text}\n")
         raise e
         
-def write_sparql_res(folder_name, file_prefix, question, expected_sparql, actual_sparql, res):
+def write_sparql_res(folder_name, file_prefix, question, expected_sparql, actual_sparql, res, error_msg):
     res_record = {
         'question': question, 
         'expected_sparql': expected_sparql,
         'actual_sparql': actual_sparql,
-        'res': res
+        'res': res,
+        'error_msg': error_msg
     }
     with open(f"{folder_name}/{file_prefix}.json", 'w') as resfile: 
         resfile.write(json.dumps(res_record, indent=3))
