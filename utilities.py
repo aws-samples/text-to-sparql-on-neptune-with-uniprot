@@ -6,6 +6,7 @@ from typing import Callable
 import os
 import re
 import json
+import csv
 from pathlib import Path
 from functools import partial
 from typing import List, Union, Optional
@@ -15,23 +16,6 @@ import requests
 from botocore.exceptions import ClientError
 from botocore.awsrequest import AWSRequest
 from botocore.auth import SigV4Auth
-
-
-def create_bedrock_runner(bedrock_runtime,
-                          model_id: str,
-                          temperature: float) -> Callable:
-    return partial(run_bedrock,
-                   bedrock_runtime=bedrock_runtime,
-                   model_id=model_id,
-                   temperature=temperature)
-
-def normalize_ws(s: str) -> str:
-    """
-    >>> normalize_ws(" a  b c  ")
-    'a b c'
-    """
-    return re.sub(r"\s+", " ", s).strip()
-    
 
 def get_neptune_env(var: str) -> str:
     """
@@ -76,25 +60,6 @@ def run_bedrock(system: str,
               f"{err.response['Error']['Message']}")
         raise err
 
-
-PREFIXES = (Path.cwd() / "resources" / "prefixes.txt").read_text()
-
-
-def run_generated_query(query_sans_prefixes, sagemaker_session):
-    query = f"""
-{PREFIXES}
-
-{query_sans_prefixes}
-    """
-    print(f"SPARQL query:\n{query}")    
-    return execute_sparql(query, sagemaker_session)
-
-
-def generate_and_run(question: str,
-                     sparql_generator: Callable[[str], str],
-                     sagemaker_session):
-    return run_generated_query(sparql_generator(question),
-                               sagemaker_session)
 
 
 # Grab Neptune cluster host/port from notebook instance environment variables
@@ -149,10 +114,7 @@ def execute_sparql(query: str,
 
     try:
         json_resp = json.loads(response.text)
-        if 'results' in json_resp:
-            return json_resp['results']['bindings']
-        else:
-            return json_resp
+        return json_resp
     except Exception as e:
         print("Exception: {}".format(type(e).__name__))
         print("Exception message: {}".format(e))
@@ -171,4 +133,24 @@ def write_sparql_res(folder_name, file_prefix, question, expected_sparql, actual
     }
     with open(f"{folder_name}/{file_prefix}.json", 'w') as resfile: 
         resfile.write(json.dumps(res_record, indent=3))
+
+        
+def make_report(folder_name):
+
+    files=os.listdir(folder_name)
+
+    with open(f'{folder_name}_report.csv', 'w', newline='') as csvfile:
+        writer = csv.writer(csvfile)
+        writer.writerow(["qfile","question", "numresults", "errormsg", "gensparql"])
+        for fn in files:
+            with open(f"{folder_name}/{fn}", 'r') as jfile: 
+                j = json.load(jfile)
+                index=fn.split(".")[0]
+                nlq=j['question'].replace("\n", "")
+                error_msg=j['error_msg'].replace("\n", "")
+                gen_sparql=j['actual_sparql'].replace("\n", "")
+                res=j['res']
+                num_results=len(res['results']['bindings']) if 'results' in res and 'bindings' in res['results'] else 0
+                writer.writerow([index, nlq, num_results, error_msg, gen_sparql])
+
 
