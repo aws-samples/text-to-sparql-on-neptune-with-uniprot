@@ -123,6 +123,33 @@ def execute_sparql(query: str,
         print(f"Here is the result:\n{response.text}\n")
         raise e
         
+UNIPROT_REF_ENDPOINT="https://sparql.uniprot.org/sparql"
+def execute_sparql_uniprotref(query: str):
+    request_data = query.strip()
+    data = request_data
+    request_hdr = {}
+    request_hdr["Content-Type"] = "application/sparql-query"
+    request_hdr['Accept']='application/sparql-results+json'
+
+    response = requests.request(
+        method="POST", url=UNIPROT_REF_ENDPOINT, headers=request_hdr, data=data
+    )
+    if str(response.status_code) != "200":
+        print(f"Query error {response.status_code} {response.text}")
+        print(f"Here is the query:\n{query}\n")
+        print(f"Here is the result:\n{response.text}\n")
+        raise Exception({response.status_code, response.text})
+
+    try:
+        json_resp = json.loads(response.text)
+        return json_resp
+    except Exception as e:
+        print("Exception: {}".format(type(e).__name__))
+        print("Exception message: {}".format(e))
+        print(f"Here is the query:\n{query}\n")
+        print(f"Here is the result:\n{response.text}\n")
+        raise e
+        
 def write_sparql_res(folder_name, file_prefix, question, expected_sparql, actual_sparql, res, error_msg):
     res_record = {
         'question': question, 
@@ -141,16 +168,17 @@ def make_report(folder_name):
 
     with open(f'{folder_name}_report.csv', 'w', newline='') as csvfile:
         writer = csv.writer(csvfile)
-        writer.writerow(["qfile","question", "numresults", "errormsg", "gensparql"])
+        writer.writerow(["qfile","question", "numresults", "errormsg", "expected_sparql", "gen_sparql"])
         for fn in files:
             with open(f"{folder_name}/{fn}", 'r') as jfile: 
                 j = json.load(jfile)
                 index=fn.split(".")[0]
                 nlq=j['question'].replace("\n", "")
                 error_msg=j['error_msg'].replace("\n", "")
+                expected_sparql=j['expected_sparql'].replace("\n", "")
                 gen_sparql=j['actual_sparql'].replace("\n", "")
                 res=j['res']
                 num_results=len(res['results']['bindings']) if 'results' in res and 'bindings' in res['results'] else 0
-                writer.writerow([index, nlq, num_results, error_msg, gen_sparql])
+                writer.writerow([index, nlq, num_results, error_msg, expected_sparql, gen_sparql])
 
 
