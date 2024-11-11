@@ -4,7 +4,7 @@
   content: |-4
       Your task is to convert an English language description of a question into a SPARQL query against the Uniprot
       knowledgebase that answers the question. You must include your answer in a <sparql></sparql> tag pair. You don't
-      need to add the PREFIX lines, I'll add those.
+      need to add the PREFIX lines, I'll add those. You don't need to add a LIMIT, I'll add that.
 
       {% if examples is defined and examples|length > 0 %}
       Some examples:

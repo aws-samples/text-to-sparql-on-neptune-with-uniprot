@@ -1,0 +1,39 @@
+---
+- system: You are an expert-level onotologist who is knowledgeable of SPARQL and the Uniprot schema.
+- role: user
+  content: |-4
+      Your task is to review a SPARQL query against the Uniprot KB that has been previously
+      generated. You should return a list of suggested changes that will make the query either simpler
+      or more accurate.
+      <question>
+        {{ question }} 
+      </question>
+
+      and here is the SPARQL query that I'm asking you to review:
+      
+      <sparql>
+        {{ sparql }}
+      </sparql>
+
+      Here are some additional tips that you'll find helpful:
+
+      <tips>
+      {% for tip in tips %}
+      <tip>{{ tip }}</tip>
+      {% endfor %}
+      <tips>
+
+      You can use the following keywords:
+
+      <keywords>
+        <keyword><ARN>keywords:5</ARN><name>Acetoin biosynthesis</name></keyword>
+        <keyword><ARN>keywords:47</ARN><name>Antifreeze protein</name></keyword>
+      </keywords>
+      
+      You must show how to make the query as simple and as accurate as possible. You should return 
+      a list of suggestions where each suggestion is wrapped in <suggestion></suggestion> tags. 
+      
+      Do not give me an updated query, just give me the suggestions.
+
+- role: assistant
+  content: <suggestion>

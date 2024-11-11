@@ -1,0 +1,243 @@
+{
+   "question": "Select the number of UniProt entries for each of the EC (Enzyme Commission) second level categories",
+   "expected_sparql": "SELECT ?enzyme (COUNT(?protein) as ?size)\nWHERE\n{\n    VALUES (?ecClass) {(ec:1.-.-.-) (ec:2.-.-.-) (ec:3.-.-.-) (ec:4.-.-.-) (ec:5.-.-.-) (ec:6.-.-.-) (ec:7.-.-.-) }\n    ?protein up:enzyme ?enzyme .\n    ?enzyme rdfs:subClassOf ?ecClass .\n}\nGROUP BY ?enzyme ORDER BY ?enzyme\n",
+   "initial_sparql": null,
+   "improved_sparql": null,
+   "actual_sparql": "PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>\nPREFIX wikibase: <http://wikiba.se/ontology#>\nPREFIX wdt: <http://www.wikidata.org/prop/direct/>\nPREFIX wd: <http://www.wikidata.org/entity/>\nPREFIX vg: <http://biohackathon.org/resource/vg#>\nPREFIX up: <http://purl.uniprot.org/core/>\nPREFIX uniprotkb: <http://purl.uniprot.org/uniprot/>\nPREFIX uberon: <http://purl.obolibrary.org/obo/uo#>\nPREFIX taxon: <http://purl.uniprot.org/taxonomy/>\nPREFIX sp: <http://spinrdf.org/sp#>\nPREFIX skos: <http://www.w3.org/2004/02/skos/core#>\nPREFIX sio: <http://semanticscience.org/resource/>\nPREFIX sh: <http://www.w3.org/ns/shacl#>\nPREFIX schema: <http://schema.org/>\nPREFIX sachem: <http://bioinfo.uochb.cas.cz/rdf/v1.0/sachem#>\nPREFIX rh: <http://rdf.rhea-db.org/>\nPREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\nPREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\nPREFIX pubmed: <http://rdf.ncbi.nlm.nih.gov/pubmed/>\nPREFIX ps: <http://www.wikidata.org/prop/statement/>\nPREFIX pq: <http://www.wikidata.org/prop/qualifier/>\nPREFIX patent: <http://data.epo.org/linked-data/def/patent/>\nPREFIX p: <http://www.wikidata.org/prop/>\nPREFIX owl: <http://www.w3.org/2002/07/owl#>\nPREFIX orthodbGroup: <http://purl.orthodb.org/odbgroup/>\nPREFIX orthodb: <http://purl.orthodb.org/>\nPREFIX orth: <http://purl.org/net/orth#>\nPREFIX obo: <http://purl.obolibrary.org/obo/>\nPREFIX np: <http://nextprot.org/rdf#>\nPREFIX nextprot: <http://nextprot.org/rdf/entry/>\nPREFIX mnx: <https://rdf.metanetx.org/schema/>\nPREFIX mnet: <https://rdf.metanetx.org/mnet/>\nPREFIX mesh: <http://id.nlm.nih.gov/mesh/>\nPREFIX lscr: <http://purl.org/lscr#>\nPREFIX lipidmaps: <https://www.lipidmaps.org/rdf/>\nPREFIX keywords: <http://purl.uniprot.org/keywords/>\nPREFIX insdcschema: <http://ddbj.nig.ac.jp/ontologies/nucleotide/>\nPREFIX insdc: <http://identifiers.org/insdc/>\nPREFIX identifiers: <http://identifiers.org/>\nPREFIX glyconnect: <https://purl.org/glyconnect/>\nPREFIX glycan: <http://purl.jp/bio/12/glyco/glycan#>\nPREFIX genex: <http://purl.org/genex#>\nPREFIX foaf: <http://xmlns.com/foaf/0.1/>\nPREFIX faldo: <http://biohackathon.org/resource/faldo#>\nPREFIX eunisSpecies: <http://eunis.eea.europa.eu/rdf/species-schema.rdf#>\nPREFIX ensembltranscript: <http://rdf.ebi.ac.uk/resource/ensembl.transcript/>\nPREFIX ensemblterms: <http://rdf.ebi.ac.uk/terms/ensembl/>\nPREFIX ensemblprotein: <http://rdf.ebi.ac.uk/resource/ensembl.protein/>\nPREFIX ensemblexon: <http://rdf.ebi.ac.uk/resource/ensembl.exon/>\nPREFIX ensembl: <http://rdf.ebi.ac.uk/resource/ensembl/>\nPREFIX ec: <http://purl.uniprot.org/enzyme/>\nPREFIX dcterms: <http://purl.org/dc/terms/>\nPREFIX dc: <http://purl.org/dc/terms/>\nPREFIX chebislash: <http://purl.obolibrary.org/obo/chebi/>\nPREFIX chebihash: <http://purl.obolibrary.org/obo/chebi#>\nPREFIX cco: <http://rdf.ebi.ac.uk/terms/chembl#>\nPREFIX busco: <http://busco.ezlab.org/schema#>\nPREFIX bibo: <http://purl.org/ontology/bibo/>\nPREFIX allie: <http://allie.dbcls.jp/>\nPREFIX SWISSLIPID: <https://swisslipids.org/rdf/SLM_>\nPREFIX GO: <http://purl.obolibrary.org/obo/GO_>\nPREFIX ECO: <http://purl.obolibrary.org/obo/ECO_>\nPREFIX CHEBI: <http://purl.obolibrary.org/obo/CHEBI_>\n\n\n    SELECT ?enzyme (COUNT(?protein) as ?size)\nWHERE\n{\n    VALUES (?ecClass) {(ec:1.-.-.-) (ec:2.-.-.-) (ec:3.-.-.-) (ec:4.-.-.-) (ec:5.-.-.-) (ec:6.-.-.-) (ec:7.-.-.-) }\n    ?protein up:enzyme ?enzyme .\n    ?enzyme rdfs:subClassOf ?ecClass .\n}\nGROUP BY ?enzyme ORDER BY ?enzyme\n\n\n    LIMIT 20",
+   "is_orig_used": false,
+   "res": {
+      "head": {
+         "vars": [
+            "enzyme",
+            "size"
+         ]
+      },
+      "results": {
+         "bindings": [
+            {
+               "enzyme": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/enzyme/1.1.-.-"
+               },
+               "size": {
+                  "datatype": "http://www.w3.org/2001/XMLSchema#int",
+                  "type": "literal",
+                  "value": "7750"
+               }
+            },
+            {
+               "enzyme": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/enzyme/1.1.1.-"
+               },
+               "size": {
+                  "datatype": "http://www.w3.org/2001/XMLSchema#int",
+                  "type": "literal",
+                  "value": "29877"
+               }
+            },
+            {
+               "enzyme": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/enzyme/1.1.1.1"
+               },
+               "size": {
+                  "datatype": "http://www.w3.org/2001/XMLSchema#int",
+                  "type": "literal",
+                  "value": "44746"
+               }
+            },
+            {
+               "enzyme": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/enzyme/1.1.1.10"
+               },
+               "size": {
+                  "datatype": "http://www.w3.org/2001/XMLSchema#int",
+                  "type": "literal",
+                  "value": "311"
+               }
+            },
+            {
+               "enzyme": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/enzyme/1.1.1.100"
+               },
+               "size": {
+                  "datatype": "http://www.w3.org/2001/XMLSchema#int",
+                  "type": "literal",
+                  "value": "72280"
+               }
+            },
+            {
+               "enzyme": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/enzyme/1.1.1.101"
+               },
+               "size": {
+                  "datatype": "http://www.w3.org/2001/XMLSchema#int",
+                  "type": "literal",
+                  "value": "80"
+               }
+            },
+            {
+               "enzyme": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/enzyme/1.1.1.102"
+               },
+               "size": {
+                  "datatype": "http://www.w3.org/2001/XMLSchema#int",
+                  "type": "literal",
+                  "value": "4735"
+               }
+            },
+            {
+               "enzyme": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/enzyme/1.1.1.103"
+               },
+               "size": {
+                  "datatype": "http://www.w3.org/2001/XMLSchema#int",
+                  "type": "literal",
+                  "value": "11675"
+               }
+            },
+            {
+               "enzyme": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/enzyme/1.1.1.104"
+               },
+               "size": {
+                  "datatype": "http://www.w3.org/2001/XMLSchema#int",
+                  "type": "literal",
+                  "value": "1001"
+               }
+            },
+            {
+               "enzyme": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/enzyme/1.1.1.105"
+               },
+               "size": {
+                  "datatype": "http://www.w3.org/2001/XMLSchema#int",
+                  "type": "literal",
+                  "value": "143"
+               }
+            },
+            {
+               "enzyme": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/enzyme/1.1.1.107"
+               },
+               "size": {
+                  "datatype": "http://www.w3.org/2001/XMLSchema#int",
+                  "type": "literal",
+                  "value": "678"
+               }
+            },
+            {
+               "enzyme": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/enzyme/1.1.1.108"
+               },
+               "size": {
+                  "datatype": "http://www.w3.org/2001/XMLSchema#int",
+                  "type": "literal",
+                  "value": "3666"
+               }
+            },
+            {
+               "enzyme": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/enzyme/1.1.1.11"
+               },
+               "size": {
+                  "datatype": "http://www.w3.org/2001/XMLSchema#int",
+                  "type": "literal",
+                  "value": "99"
+               }
+            },
+            {
+               "enzyme": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/enzyme/1.1.1.110"
+               },
+               "size": {
+                  "datatype": "http://www.w3.org/2001/XMLSchema#int",
+                  "type": "literal",
+                  "value": "2"
+               }
+            },
+            {
+               "enzyme": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/enzyme/1.1.1.112"
+               },
+               "size": {
+                  "datatype": "http://www.w3.org/2001/XMLSchema#int",
+                  "type": "literal",
+                  "value": "12"
+               }
+            },
+            {
+               "enzyme": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/enzyme/1.1.1.113"
+               },
+               "size": {
+                  "datatype": "http://www.w3.org/2001/XMLSchema#int",
+                  "type": "literal",
+                  "value": "2"
+               }
+            },
+            {
+               "enzyme": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/enzyme/1.1.1.114"
+               },
+               "size": {
+                  "datatype": "http://www.w3.org/2001/XMLSchema#int",
+                  "type": "literal",
+                  "value": "1"
+               }
+            },
+            {
+               "enzyme": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/enzyme/1.1.1.116"
+               },
+               "size": {
+                  "datatype": "http://www.w3.org/2001/XMLSchema#int",
+                  "type": "literal",
+                  "value": "23"
+               }
+            },
+            {
+               "enzyme": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/enzyme/1.1.1.117"
+               },
+               "size": {
+                  "datatype": "http://www.w3.org/2001/XMLSchema#int",
+                  "type": "literal",
+                  "value": "10"
+               }
+            },
+            {
+               "enzyme": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/enzyme/1.1.1.119"
+               },
+               "size": {
+                  "datatype": "http://www.w3.org/2001/XMLSchema#int",
+                  "type": "literal",
+                  "value": "105"
+               }
+            }
+         ]
+      }
+   },
+   "error_msg": "",
+   "error_type": "",
+   "attempt": 1
+}

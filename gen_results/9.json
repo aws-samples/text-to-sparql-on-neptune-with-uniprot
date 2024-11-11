@@ -1,0 +1,385 @@
+{
+   "question": "Select all human UniProt entries with a sequence variant that leads to a 'loss of function'",
+   "expected_sparql": "SELECT ?protein ?text\nWHERE\n{\n    ?protein a up:Protein .\n    ?protein up:organism taxon:9606 .\n    ?protein up:annotation ?annotation .\n    ?annotation a up:Natural_Variant_Annotation .\n    ?annotation rdfs:comment ?text .\n    FILTER (CONTAINS(?text, 'loss of function'))\n}\n",
+   "initial_sparql": "SELECT ?protein ?annotation ?text\nWHERE\n{\n    ?protein a up:Protein ;\n             up:organism taxon:9606 ;\n             up:annotation ?annotation .\n    ?annotation a up:Natural_Variant_Annotation ;\n                rdfs:comment ?text .\n    FILTER(REGEX(?text, \"loss of function\", \"i\"))\n}",
+   "improved_sparql": "SELECT DISTINCT ?protein ?proteinName ?annotation ?text\nWHERE\n{\n    ?protein a up:Protein ;\n             up:organism taxon:9606 ;\n             up:annotation ?annotation ;\n             up:recommendedName/up:fullName ?proteinName .\n    ?annotation a up:Natural_Variant_Annotation ;\n                rdfs:comment ?text .\n    FILTER(REGEX(?text, \"(loss.?of.?function|LOF)\", \"i\"))\n}",
+   "actual_sparql": "\n            PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>\nPREFIX wikibase: <http://wikiba.se/ontology#>\nPREFIX wdt: <http://www.wikidata.org/prop/direct/>\nPREFIX wd: <http://www.wikidata.org/entity/>\nPREFIX vg: <http://biohackathon.org/resource/vg#>\nPREFIX up: <http://purl.uniprot.org/core/>\nPREFIX uniprotkb: <http://purl.uniprot.org/uniprot/>\nPREFIX uberon: <http://purl.obolibrary.org/obo/uo#>\nPREFIX taxon: <http://purl.uniprot.org/taxonomy/>\nPREFIX sp: <http://spinrdf.org/sp#>\nPREFIX skos: <http://www.w3.org/2004/02/skos/core#>\nPREFIX sio: <http://semanticscience.org/resource/>\nPREFIX sh: <http://www.w3.org/ns/shacl#>\nPREFIX schema: <http://schema.org/>\nPREFIX sachem: <http://bioinfo.uochb.cas.cz/rdf/v1.0/sachem#>\nPREFIX rh: <http://rdf.rhea-db.org/>\nPREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\nPREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\nPREFIX pubmed: <http://rdf.ncbi.nlm.nih.gov/pubmed/>\nPREFIX ps: <http://www.wikidata.org/prop/statement/>\nPREFIX pq: <http://www.wikidata.org/prop/qualifier/>\nPREFIX patent: <http://data.epo.org/linked-data/def/patent/>\nPREFIX p: <http://www.wikidata.org/prop/>\nPREFIX owl: <http://www.w3.org/2002/07/owl#>\nPREFIX orthodbGroup: <http://purl.orthodb.org/odbgroup/>\nPREFIX orthodb: <http://purl.orthodb.org/>\nPREFIX orth: <http://purl.org/net/orth#>\nPREFIX obo: <http://purl.obolibrary.org/obo/>\nPREFIX np: <http://nextprot.org/rdf#>\nPREFIX nextprot: <http://nextprot.org/rdf/entry/>\nPREFIX mnx: <https://rdf.metanetx.org/schema/>\nPREFIX mnet: <https://rdf.metanetx.org/mnet/>\nPREFIX mesh: <http://id.nlm.nih.gov/mesh/>\nPREFIX lscr: <http://purl.org/lscr#>\nPREFIX lipidmaps: <https://www.lipidmaps.org/rdf/>\nPREFIX keywords: <http://purl.uniprot.org/keywords/>\nPREFIX insdcschema: <http://ddbj.nig.ac.jp/ontologies/nucleotide/>\nPREFIX insdc: <http://identifiers.org/insdc/>\nPREFIX identifiers: <http://identifiers.org/>\nPREFIX glyconnect: <https://purl.org/glyconnect/>\nPREFIX glycan: <http://purl.jp/bio/12/glyco/glycan#>\nPREFIX genex: <http://purl.org/genex#>\nPREFIX foaf: <http://xmlns.com/foaf/0.1/>\nPREFIX faldo: <http://biohackathon.org/resource/faldo#>\nPREFIX eunisSpecies: <http://eunis.eea.europa.eu/rdf/species-schema.rdf#>\nPREFIX ensembltranscript: <http://rdf.ebi.ac.uk/resource/ensembl.transcript/>\nPREFIX ensemblterms: <http://rdf.ebi.ac.uk/terms/ensembl/>\nPREFIX ensemblprotein: <http://rdf.ebi.ac.uk/resource/ensembl.protein/>\nPREFIX ensemblexon: <http://rdf.ebi.ac.uk/resource/ensembl.exon/>\nPREFIX ensembl: <http://rdf.ebi.ac.uk/resource/ensembl/>\nPREFIX ec: <http://purl.uniprot.org/enzyme/>\nPREFIX dcterms: <http://purl.org/dc/terms/>\nPREFIX dc: <http://purl.org/dc/terms/>\nPREFIX chebislash: <http://purl.obolibrary.org/obo/chebi/>\nPREFIX chebihash: <http://purl.obolibrary.org/obo/chebi#>\nPREFIX cco: <http://rdf.ebi.ac.uk/terms/chembl#>\nPREFIX busco: <http://busco.ezlab.org/schema#>\nPREFIX bibo: <http://purl.org/ontology/bibo/>\nPREFIX allie: <http://allie.dbcls.jp/>\nPREFIX SWISSLIPID: <https://swisslipids.org/rdf/SLM_>\nPREFIX GO: <http://purl.obolibrary.org/obo/GO_>\nPREFIX ECO: <http://purl.obolibrary.org/obo/ECO_>\nPREFIX CHEBI: <http://purl.obolibrary.org/obo/CHEBI_>\n\n\n            SELECT DISTINCT ?protein ?proteinName ?annotation ?text\nWHERE\n{\n    ?protein a up:Protein ;\n             up:organism taxon:9606 ;\n             up:annotation ?annotation ;\n             up:recommendedName/up:fullName ?proteinName .\n    ?annotation a up:Natural_Variant_Annotation ;\n                rdfs:comment ?text .\n    FILTER(REGEX(?text, \"(loss.?of.?function|LOF)\", \"i\"))\n}\n\n            LIMIT 20\n        ",
+   "is_orig_used": false,
+   "res": {
+      "head": {
+         "vars": [
+            "protein",
+            "proteinName",
+            "annotation",
+            "text"
+         ]
+      },
+      "results": {
+         "bindings": [
+            {
+               "annotation": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/annotation/VAR_084605"
+               },
+               "proteinName": {
+                  "type": "literal",
+                  "value": "Mitochondrial inner membrane m-AAA protease component AFG3L2"
+               },
+               "protein": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/uniprot/Q9Y4W6"
+               },
+               "text": {
+                  "type": "literal",
+                  "value": "In OPA12; loss-of-function variant resulting in aberrant OPA1 processing and mitochondrial fragmentation."
+               }
+            },
+            {
+               "annotation": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/annotation/VAR_086886"
+               },
+               "proteinName": {
+                  "type": "literal",
+                  "value": "Phosphatidylserine lipase ABHD16A"
+               },
+               "protein": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/uniprot/O95870"
+               },
+               "text": {
+                  "type": "literal",
+                  "value": "In SPG86; no protein detected in homozygous patient cells; increased levels of phosphatidylserine and decreased levels of lysophosphatidylserine in homozygous patient cells, indicating loss of function in phosphatidylserine catabolism."
+               }
+            },
+            {
+               "annotation": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/annotation/VAR_086893"
+               },
+               "proteinName": {
+                  "type": "literal",
+                  "value": "Phosphatidylserine lipase ABHD16A"
+               },
+               "protein": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/uniprot/O95870"
+               },
+               "text": {
+                  "type": "literal",
+                  "value": "In SPG86; no protein detected in homozygous patient cells; increased levels of phosphatidylserine and decreased levels of lysophosphatidylserine in homozygous patient cells, indicating loss of function in phosphatidylserine catabolism."
+               }
+            },
+            {
+               "annotation": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/annotation/VAR_083543"
+               },
+               "proteinName": {
+                  "type": "literal",
+                  "value": "Neuronal acetylcholine receptor subunit alpha-3"
+               },
+               "protein": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/uniprot/P32297"
+               },
+               "text": {
+                  "type": "literal",
+                  "value": "In BAIPRCK; loss-of-function variant affecting ion transmembrane transport in response to acetylcholine; does not localize to plasma membrane."
+               }
+            },
+            {
+               "annotation": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/annotation/VAR_085425"
+               },
+               "proteinName": {
+                  "type": "literal",
+                  "value": "Protein argonaute-2"
+               },
+               "protein": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/uniprot/Q9UKV8"
+               },
+               "text": {
+                  "type": "literal",
+                  "value": "In LESKRES; complete loss of function. Changes in the subcellular location pattern. Diffuse location into the cytoplasm. Does not bind mRNA. Abolishes interaction with DICER1. Abolishes phosphorylation of the C-terminal serine cluster. Does not affect phosphorylation of Ser-387."
+               }
+            },
+            {
+               "annotation": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/annotation/VAR_073331"
+               },
+               "proteinName": {
+                  "type": "literal",
+                  "value": "UDP-N-acetylglucosamine transferase subunit ALG14"
+               },
+               "protein": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/uniprot/Q96F25"
+               },
+               "text": {
+                  "type": "literal",
+                  "value": "In CMS15; results in a severe reduction in protein expression; loss of function in dolichol-linked oligosaccharide biosynthetic process."
+               }
+            },
+            {
+               "annotation": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/annotation/VAR_017904"
+               },
+               "proteinName": {
+                  "type": "literal",
+                  "value": "Dol-P-Man:Man(7)GlcNAc(2)-PP-Dol alpha-1,6-mannosyltransferase"
+               },
+               "protein": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/uniprot/Q9BV10"
+               },
+               "text": {
+                  "type": "literal",
+                  "value": "In CDG1G; loss of function in dolichol-linked oligosaccharide biosynthetic process."
+               }
+            },
+            {
+               "annotation": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/annotation/VAR_017906"
+               },
+               "proteinName": {
+                  "type": "literal",
+                  "value": "Dol-P-Man:Man(7)GlcNAc(2)-PP-Dol alpha-1,6-mannosyltransferase"
+               },
+               "protein": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/uniprot/Q9BV10"
+               },
+               "text": {
+                  "type": "literal",
+                  "value": "In CDG1G; loss of function in dolichol-linked oligosaccharide biosynthetic process."
+               }
+            },
+            {
+               "annotation": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/annotation/VAR_023413"
+               },
+               "proteinName": {
+                  "type": "literal",
+                  "value": "Alpha-1,2-mannosyltransferase ALG9"
+               },
+               "protein": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/uniprot/Q9H6U8"
+               },
+               "text": {
+                  "type": "literal",
+                  "value": "In CDG1L; loss of function in dolichol-linked oligosaccharide biosynthetic process."
+               }
+            },
+            {
+               "annotation": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/annotation/VAR_023410"
+               },
+               "proteinName": {
+                  "type": "literal",
+                  "value": "Alpha-1,2-mannosyltransferase ALG9"
+               },
+               "protein": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/uniprot/Q9H6U8"
+               },
+               "text": {
+                  "type": "literal",
+                  "value": "In CDG1L; loss of function in dolichol-linked oligosaccharide biosynthetic process."
+               }
+            },
+            {
+               "annotation": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/annotation/VAR_087728"
+               },
+               "proteinName": {
+                  "type": "literal",
+                  "value": "Dolichyl-phosphate beta-glucosyltransferase"
+               },
+               "protein": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/uniprot/Q9Y673"
+               },
+               "text": {
+                  "type": "literal",
+                  "value": "In PKD7; loss of function in protein N-linked glycosylation; unable to rescue defective PKD1 glycosylation and maturation in ALG5-deficient cells."
+               }
+            },
+            {
+               "annotation": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/annotation/VAR_087727"
+               },
+               "proteinName": {
+                  "type": "literal",
+                  "value": "Dolichyl-phosphate beta-glucosyltransferase"
+               },
+               "protein": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/uniprot/Q9Y673"
+               },
+               "text": {
+                  "type": "literal",
+                  "value": "In PKD7; loss of function in protein N-linked glycosylation; unable to rescue defective PKD1 glycosylation and maturation in ALG5-deficient cells."
+               }
+            },
+            {
+               "annotation": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/annotation/VAR_078073"
+               },
+               "proteinName": {
+                  "type": "literal",
+                  "value": "ADP/ATP translocase 1"
+               },
+               "protein": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/uniprot/P12235"
+               },
+               "text": {
+                  "type": "literal",
+                  "value": "In MTDPS12B; loss of function in ADP transport."
+               }
+            },
+            {
+               "annotation": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/annotation/VAR_038815"
+               },
+               "proteinName": {
+                  "type": "literal",
+                  "value": "ADP/ATP translocase 1"
+               },
+               "protein": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/uniprot/P12235"
+               },
+               "text": {
+                  "type": "literal",
+                  "value": "In MTDPS12B; loss of function in ADP transport."
+               }
+            },
+            {
+               "annotation": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/annotation/VAR_062590"
+               },
+               "proteinName": {
+                  "type": "literal",
+                  "value": "Aquaporin-2"
+               },
+               "protein": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/uniprot/P41181"
+               },
+               "text": {
+                  "type": "literal",
+                  "value": "In NDI2; exerts a dominant-negative effect on wild-type-AQP2 in that it interferes with its trafficking to the apical membrane; is a loss of function instead of a gain of function mutation on dominant nephrogenic diabetes insipidus."
+               }
+            },
+            {
+               "annotation": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/annotation/VAR_088778"
+               },
+               "proteinName": {
+                  "type": "literal",
+                  "value": "Aquaporin-4"
+               },
+               "protein": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/uniprot/P55087"
+               },
+               "text": {
+                  "type": "literal",
+                  "value": "In MLC4; likely pathogenic; loss of function in cell volume regulation; does not localize to the cell membrane."
+               }
+            },
+            {
+               "annotation": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/annotation/VAR_078919"
+               },
+               "proteinName": {
+                  "type": "literal",
+                  "value": "Rho guanine nucleotide exchange factor 18"
+               },
+               "protein": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/uniprot/Q6ZSZ5"
+               },
+               "text": {
+                  "type": "literal",
+                  "value": "In RP78; decreased function in positive regulation of Rho protein signal transduction; loss of function in regulation of actomyosin structure organization."
+               }
+            },
+            {
+               "annotation": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/annotation/VAR_079105"
+               },
+               "proteinName": {
+                  "type": "literal",
+                  "value": "Armadillo repeat-containing protein 5"
+               },
+               "protein": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/uniprot/Q96C12"
+               },
+               "text": {
+                  "type": "literal",
+                  "value": "In AIMAH2; loss of function in promoting apoptosis."
+               }
+            },
+            {
+               "annotation": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/annotation/VAR_072357"
+               },
+               "proteinName": {
+                  "type": "literal",
+                  "value": "Armadillo repeat-containing protein 5"
+               },
+               "protein": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/uniprot/Q96C12"
+               },
+               "text": {
+                  "type": "literal",
+                  "value": "In AIMAH2; uncertain significance; loss of function in promoting apoptosis."
+               }
+            },
+            {
+               "annotation": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/annotation/VAR_079100"
+               },
+               "proteinName": {
+                  "type": "literal",
+                  "value": "Armadillo repeat-containing protein 5"
+               },
+               "protein": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/uniprot/Q96C12"
+               },
+               "text": {
+                  "type": "literal",
+                  "value": "In AIMAH2; loss of function in promoting apoptosis."
+               }
+            }
+         ]
+      }
+   },
+   "error_msg": "",
+   "error_type": "",
+   "attempt": 1
+}

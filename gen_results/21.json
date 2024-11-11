@@ -1,0 +1,385 @@
+{
+   "question": "Find where disease related proteins are known to be located in the cell. Return the protein, the disease, the location inside the cell, and the cellular compartment",
+   "expected_sparql": "SELECT\n    ?protein\n    ?disease\n    ?location_inside_cell\n    ?cellcmpt\nWHERE\n{\n    ?protein up:annotation ?diseaseAnnotation , ?subcellAnnotation .\n    ?diseaseAnnotation up:disease/skos:prefLabel ?disease .\n    ?subcellAnnotation up:locatedIn/up:cellularComponent ?cellcmpt .\n    ?cellcmpt skos:prefLabel ?location_inside_cell .\n}\n",
+   "initial_sparql": "SELECT DISTINCT ?protein ?disease ?location_inside_cell ?compartment\nWHERE {\n    ?protein a up:Protein ;\n            up:annotation ?diseaseAnnotation ;\n            up:annotation ?subcellAnnotation .\n    \n    # Get disease information\n    ?diseaseAnnotation a up:Disease_Annotation ;\n                      rdfs:comment ?disease .\n    \n    # Get cellular location information\n    ?subcellAnnotation up:locatedIn/up:cellularComponent ?compartment .\n    ?compartment skos:prefLabel ?location_inside_cell .\n}",
+   "improved_sparql": "SELECT ?protein ?protein_name ?disease ?location_inside_cell ?compartment\nWHERE {\n    ?protein a up:Protein ;\n            up:annotation ?diseaseAnnotation ;\n            up:annotation ?subcellAnnotation ;\n            skos:prefLabel ?protein_name .\n    \n    # Get disease information\n    ?diseaseAnnotation a up:Disease_Annotation ;\n                      up:disease ?disease_term .\n    ?disease_term skos:prefLabel ?disease .\n    \n    # Get cellular location information\n    ?subcellAnnotation a up:Subcellular_Location_Annotation ;\n                      up:cellularComponent ?compartment .\n    ?compartment skos:prefLabel ?location_inside_cell .\n    \n    # Filter out empty values\n    FILTER (bound(?disease) && bound(?location_inside_cell))\n}",
+   "actual_sparql": "\n            PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>\nPREFIX wikibase: <http://wikiba.se/ontology#>\nPREFIX wdt: <http://www.wikidata.org/prop/direct/>\nPREFIX wd: <http://www.wikidata.org/entity/>\nPREFIX vg: <http://biohackathon.org/resource/vg#>\nPREFIX up: <http://purl.uniprot.org/core/>\nPREFIX uniprotkb: <http://purl.uniprot.org/uniprot/>\nPREFIX uberon: <http://purl.obolibrary.org/obo/uo#>\nPREFIX taxon: <http://purl.uniprot.org/taxonomy/>\nPREFIX sp: <http://spinrdf.org/sp#>\nPREFIX skos: <http://www.w3.org/2004/02/skos/core#>\nPREFIX sio: <http://semanticscience.org/resource/>\nPREFIX sh: <http://www.w3.org/ns/shacl#>\nPREFIX schema: <http://schema.org/>\nPREFIX sachem: <http://bioinfo.uochb.cas.cz/rdf/v1.0/sachem#>\nPREFIX rh: <http://rdf.rhea-db.org/>\nPREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\nPREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\nPREFIX pubmed: <http://rdf.ncbi.nlm.nih.gov/pubmed/>\nPREFIX ps: <http://www.wikidata.org/prop/statement/>\nPREFIX pq: <http://www.wikidata.org/prop/qualifier/>\nPREFIX patent: <http://data.epo.org/linked-data/def/patent/>\nPREFIX p: <http://www.wikidata.org/prop/>\nPREFIX owl: <http://www.w3.org/2002/07/owl#>\nPREFIX orthodbGroup: <http://purl.orthodb.org/odbgroup/>\nPREFIX orthodb: <http://purl.orthodb.org/>\nPREFIX orth: <http://purl.org/net/orth#>\nPREFIX obo: <http://purl.obolibrary.org/obo/>\nPREFIX np: <http://nextprot.org/rdf#>\nPREFIX nextprot: <http://nextprot.org/rdf/entry/>\nPREFIX mnx: <https://rdf.metanetx.org/schema/>\nPREFIX mnet: <https://rdf.metanetx.org/mnet/>\nPREFIX mesh: <http://id.nlm.nih.gov/mesh/>\nPREFIX lscr: <http://purl.org/lscr#>\nPREFIX lipidmaps: <https://www.lipidmaps.org/rdf/>\nPREFIX keywords: <http://purl.uniprot.org/keywords/>\nPREFIX insdcschema: <http://ddbj.nig.ac.jp/ontologies/nucleotide/>\nPREFIX insdc: <http://identifiers.org/insdc/>\nPREFIX identifiers: <http://identifiers.org/>\nPREFIX glyconnect: <https://purl.org/glyconnect/>\nPREFIX glycan: <http://purl.jp/bio/12/glyco/glycan#>\nPREFIX genex: <http://purl.org/genex#>\nPREFIX foaf: <http://xmlns.com/foaf/0.1/>\nPREFIX faldo: <http://biohackathon.org/resource/faldo#>\nPREFIX eunisSpecies: <http://eunis.eea.europa.eu/rdf/species-schema.rdf#>\nPREFIX ensembltranscript: <http://rdf.ebi.ac.uk/resource/ensembl.transcript/>\nPREFIX ensemblterms: <http://rdf.ebi.ac.uk/terms/ensembl/>\nPREFIX ensemblprotein: <http://rdf.ebi.ac.uk/resource/ensembl.protein/>\nPREFIX ensemblexon: <http://rdf.ebi.ac.uk/resource/ensembl.exon/>\nPREFIX ensembl: <http://rdf.ebi.ac.uk/resource/ensembl/>\nPREFIX ec: <http://purl.uniprot.org/enzyme/>\nPREFIX dcterms: <http://purl.org/dc/terms/>\nPREFIX dc: <http://purl.org/dc/terms/>\nPREFIX chebislash: <http://purl.obolibrary.org/obo/chebi/>\nPREFIX chebihash: <http://purl.obolibrary.org/obo/chebi#>\nPREFIX cco: <http://rdf.ebi.ac.uk/terms/chembl#>\nPREFIX busco: <http://busco.ezlab.org/schema#>\nPREFIX bibo: <http://purl.org/ontology/bibo/>\nPREFIX allie: <http://allie.dbcls.jp/>\nPREFIX SWISSLIPID: <https://swisslipids.org/rdf/SLM_>\nPREFIX GO: <http://purl.obolibrary.org/obo/GO_>\nPREFIX ECO: <http://purl.obolibrary.org/obo/ECO_>\nPREFIX CHEBI: <http://purl.obolibrary.org/obo/CHEBI_>\n\n\n            SELECT DISTINCT ?protein ?disease ?location_inside_cell ?compartment\nWHERE {\n    ?protein a up:Protein ;\n            up:annotation ?diseaseAnnotation ;\n            up:annotation ?subcellAnnotation .\n    \n    # Get disease information\n    ?diseaseAnnotation a up:Disease_Annotation ;\n                      rdfs:comment ?disease .\n    \n    # Get cellular location information\n    ?subcellAnnotation up:locatedIn/up:cellularComponent ?compartment .\n    ?compartment skos:prefLabel ?location_inside_cell .\n}\n\n            LIMIT 20\n        ",
+   "is_orig_used": true,
+   "res": {
+      "head": {
+         "vars": [
+            "protein",
+            "disease",
+            "location_inside_cell",
+            "compartment"
+         ]
+      },
+      "results": {
+         "bindings": [
+            {
+               "disease": {
+                  "type": "literal",
+                  "value": "The disease is caused by variants affecting the gene represented in this entry."
+               },
+               "protein": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/uniprot/P00505"
+               },
+               "compartment": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/locations/39"
+               },
+               "location_inside_cell": {
+                  "type": "literal",
+                  "value": "Cell membrane"
+               }
+            },
+            {
+               "disease": {
+                  "type": "literal",
+                  "value": "The disease is caused by variants affecting the gene represented in this entry."
+               },
+               "protein": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/uniprot/P00505"
+               },
+               "compartment": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/locations/170"
+               },
+               "location_inside_cell": {
+                  "type": "literal",
+                  "value": "Mitochondrion matrix"
+               }
+            },
+            {
+               "disease": {
+                  "type": "literal",
+                  "value": "The disease is caused by variants affecting the gene represented in this entry."
+               },
+               "protein": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/uniprot/P02708"
+               },
+               "compartment": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/locations/219"
+               },
+               "location_inside_cell": {
+                  "type": "literal",
+                  "value": "Postsynaptic cell membrane"
+               }
+            },
+            {
+               "disease": {
+                  "type": "literal",
+                  "value": "The alpha subunit is the main focus for antibody binding in myasthenia gravis. Myasthenia gravis is characterized by sporadic muscular fatigability and weakness, occurring chiefly in muscles innervated by cranial nerves, and characteristically improved by cholinesterase-inhibiting drugs."
+               },
+               "protein": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/uniprot/P02708"
+               },
+               "compartment": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/locations/219"
+               },
+               "location_inside_cell": {
+                  "type": "literal",
+                  "value": "Postsynaptic cell membrane"
+               }
+            },
+            {
+               "disease": {
+                  "type": "literal",
+                  "value": "The disease is caused by variants affecting the gene represented in this entry."
+               },
+               "protein": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/uniprot/P02708"
+               },
+               "compartment": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/locations/39"
+               },
+               "location_inside_cell": {
+                  "type": "literal",
+                  "value": "Cell membrane"
+               }
+            },
+            {
+               "disease": {
+                  "type": "literal",
+                  "value": "The alpha subunit is the main focus for antibody binding in myasthenia gravis. Myasthenia gravis is characterized by sporadic muscular fatigability and weakness, occurring chiefly in muscles innervated by cranial nerves, and characteristically improved by cholinesterase-inhibiting drugs."
+               },
+               "protein": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/uniprot/P02708"
+               },
+               "compartment": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/locations/39"
+               },
+               "location_inside_cell": {
+                  "type": "literal",
+                  "value": "Cell membrane"
+               }
+            },
+            {
+               "disease": {
+                  "type": "literal",
+                  "value": "The disease is caused by variants affecting the gene represented in this entry."
+               },
+               "protein": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/uniprot/P05067"
+               },
+               "compartment": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/locations/162"
+               },
+               "location_inside_cell": {
+                  "type": "literal",
+                  "value": "Membrane"
+               }
+            },
+            {
+               "disease": {
+                  "type": "literal",
+                  "value": "The disease is caused by variants affecting the gene represented in this entry."
+               },
+               "protein": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/uniprot/P05067"
+               },
+               "compartment": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/locations/288"
+               },
+               "location_inside_cell": {
+                  "type": "literal",
+                  "value": "Growth cone"
+               }
+            },
+            {
+               "disease": {
+                  "type": "literal",
+                  "value": "The disease is caused by variants affecting the gene represented in this entry."
+               },
+               "protein": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/uniprot/P05067"
+               },
+               "compartment": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/locations/39"
+               },
+               "location_inside_cell": {
+                  "type": "literal",
+                  "value": "Cell membrane"
+               }
+            },
+            {
+               "disease": {
+                  "type": "literal",
+                  "value": "The disease is caused by variants affecting the gene represented in this entry."
+               },
+               "protein": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/uniprot/P05067"
+               },
+               "compartment": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/locations/69"
+               },
+               "location_inside_cell": {
+                  "type": "literal",
+                  "value": "Clathrin-coated pit"
+               }
+            },
+            {
+               "disease": {
+                  "type": "literal",
+                  "value": "The disease is caused by variants affecting the gene represented in this entry."
+               },
+               "protein": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/uniprot/P05067"
+               },
+               "compartment": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/locations/88"
+               },
+               "location_inside_cell": {
+                  "type": "literal",
+                  "value": "Cytoplasmic vesicle"
+               }
+            },
+            {
+               "disease": {
+                  "type": "literal",
+                  "value": "The disease is caused by variants affecting the gene represented in this entry."
+               },
+               "protein": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/uniprot/P05067"
+               },
+               "compartment": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/locations/132"
+               },
+               "location_inside_cell": {
+                  "type": "literal",
+                  "value": "Golgi apparatus"
+               }
+            },
+            {
+               "disease": {
+                  "type": "literal",
+                  "value": "The disease is caused by variants affecting the gene represented in this entry."
+               },
+               "protein": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/uniprot/P05067"
+               },
+               "compartment": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/locations/197"
+               },
+               "location_inside_cell": {
+                  "type": "literal",
+                  "value": "Perikaryon"
+               }
+            },
+            {
+               "disease": {
+                  "type": "literal",
+                  "value": "The disease is caused by variants affecting the gene represented in this entry."
+               },
+               "protein": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/uniprot/P05067"
+               },
+               "compartment": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/locations/243"
+               },
+               "location_inside_cell": {
+                  "type": "literal",
+                  "value": "Secreted"
+               }
+            },
+            {
+               "disease": {
+                  "type": "literal",
+                  "value": "The disease is caused by variants affecting the gene represented in this entry."
+               },
+               "protein": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/uniprot/P05067"
+               },
+               "compartment": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/locations/310"
+               },
+               "location_inside_cell": {
+                  "type": "literal",
+                  "value": "Cell surface"
+               }
+            },
+            {
+               "disease": {
+                  "type": "literal",
+                  "value": "The disease is caused by variants affecting the gene represented in this entry."
+               },
+               "protein": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/uniprot/P05067"
+               },
+               "compartment": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/locations/94"
+               },
+               "location_inside_cell": {
+                  "type": "literal",
+                  "value": "Early endosome"
+               }
+            },
+            {
+               "disease": {
+                  "type": "literal",
+                  "value": "The disease is caused by variants affecting the gene represented in this entry."
+               },
+               "protein": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/uniprot/P05067"
+               },
+               "compartment": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/locations/95"
+               },
+               "location_inside_cell": {
+                  "type": "literal",
+                  "value": "Endoplasmic reticulum"
+               }
+            },
+            {
+               "disease": {
+                  "type": "literal",
+                  "value": "The disease is caused by variants affecting the gene represented in this entry."
+               },
+               "protein": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/uniprot/P05067"
+               },
+               "compartment": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/locations/86"
+               },
+               "location_inside_cell": {
+                  "type": "literal",
+                  "value": "Cytoplasm"
+               }
+            },
+            {
+               "disease": {
+                  "type": "literal",
+                  "value": "The disease is caused by variants affecting the gene represented in this entry."
+               },
+               "protein": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/uniprot/P05067"
+               },
+               "compartment": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/locations/191"
+               },
+               "location_inside_cell": {
+                  "type": "literal",
+                  "value": "Nucleus"
+               }
+            },
+            {
+               "disease": {
+                  "type": "literal",
+                  "value": "The disease is caused by variants affecting the gene represented in this entry."
+               },
+               "protein": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/uniprot/P07510"
+               },
+               "compartment": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/locations/219"
+               },
+               "location_inside_cell": {
+                  "type": "literal",
+                  "value": "Postsynaptic cell membrane"
+               }
+            }
+         ]
+      }
+   },
+   "error_msg": "",
+   "error_type": "",
+   "attempt": 2
+}

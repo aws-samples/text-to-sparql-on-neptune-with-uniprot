@@ -1,0 +1,324 @@
+{
+   "question": "Show me all citations by A. Bairoch",
+   "expected_sparql": "SELECT distinct ?citation\nWHERE\n{\n  ?protein a up:Protein ;\n      up:citation ?citation .\n  ?citation up:author \"Bairoch A.\" .\n}",
+   "initial_sparql": "SELECT DISTINCT ?citation\nWHERE\n{\n    ?protein a up:Protein ;\n            up:citation ?citation .\n    ?citation up:author \"Bairoch A.\" .\n}",
+   "improved_sparql": "SELECT DISTINCT ?citation ?title ?year\nWHERE\n{\n    ?citation a up:Journal_Citation ;\n             up:author ?author ;\n             up:title ?title ;\n             up:date ?year .\n    FILTER(REGEX(?author, \"Bairoch\", \"i\"))\n}",
+   "actual_sparql": "\n            PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>\nPREFIX wikibase: <http://wikiba.se/ontology#>\nPREFIX wdt: <http://www.wikidata.org/prop/direct/>\nPREFIX wd: <http://www.wikidata.org/entity/>\nPREFIX vg: <http://biohackathon.org/resource/vg#>\nPREFIX up: <http://purl.uniprot.org/core/>\nPREFIX uniprotkb: <http://purl.uniprot.org/uniprot/>\nPREFIX uberon: <http://purl.obolibrary.org/obo/uo#>\nPREFIX taxon: <http://purl.uniprot.org/taxonomy/>\nPREFIX sp: <http://spinrdf.org/sp#>\nPREFIX skos: <http://www.w3.org/2004/02/skos/core#>\nPREFIX sio: <http://semanticscience.org/resource/>\nPREFIX sh: <http://www.w3.org/ns/shacl#>\nPREFIX schema: <http://schema.org/>\nPREFIX sachem: <http://bioinfo.uochb.cas.cz/rdf/v1.0/sachem#>\nPREFIX rh: <http://rdf.rhea-db.org/>\nPREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\nPREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\nPREFIX pubmed: <http://rdf.ncbi.nlm.nih.gov/pubmed/>\nPREFIX ps: <http://www.wikidata.org/prop/statement/>\nPREFIX pq: <http://www.wikidata.org/prop/qualifier/>\nPREFIX patent: <http://data.epo.org/linked-data/def/patent/>\nPREFIX p: <http://www.wikidata.org/prop/>\nPREFIX owl: <http://www.w3.org/2002/07/owl#>\nPREFIX orthodbGroup: <http://purl.orthodb.org/odbgroup/>\nPREFIX orthodb: <http://purl.orthodb.org/>\nPREFIX orth: <http://purl.org/net/orth#>\nPREFIX obo: <http://purl.obolibrary.org/obo/>\nPREFIX np: <http://nextprot.org/rdf#>\nPREFIX nextprot: <http://nextprot.org/rdf/entry/>\nPREFIX mnx: <https://rdf.metanetx.org/schema/>\nPREFIX mnet: <https://rdf.metanetx.org/mnet/>\nPREFIX mesh: <http://id.nlm.nih.gov/mesh/>\nPREFIX lscr: <http://purl.org/lscr#>\nPREFIX lipidmaps: <https://www.lipidmaps.org/rdf/>\nPREFIX keywords: <http://purl.uniprot.org/keywords/>\nPREFIX insdcschema: <http://ddbj.nig.ac.jp/ontologies/nucleotide/>\nPREFIX insdc: <http://identifiers.org/insdc/>\nPREFIX identifiers: <http://identifiers.org/>\nPREFIX glyconnect: <https://purl.org/glyconnect/>\nPREFIX glycan: <http://purl.jp/bio/12/glyco/glycan#>\nPREFIX genex: <http://purl.org/genex#>\nPREFIX foaf: <http://xmlns.com/foaf/0.1/>\nPREFIX faldo: <http://biohackathon.org/resource/faldo#>\nPREFIX eunisSpecies: <http://eunis.eea.europa.eu/rdf/species-schema.rdf#>\nPREFIX ensembltranscript: <http://rdf.ebi.ac.uk/resource/ensembl.transcript/>\nPREFIX ensemblterms: <http://rdf.ebi.ac.uk/terms/ensembl/>\nPREFIX ensemblprotein: <http://rdf.ebi.ac.uk/resource/ensembl.protein/>\nPREFIX ensemblexon: <http://rdf.ebi.ac.uk/resource/ensembl.exon/>\nPREFIX ensembl: <http://rdf.ebi.ac.uk/resource/ensembl/>\nPREFIX ec: <http://purl.uniprot.org/enzyme/>\nPREFIX dcterms: <http://purl.org/dc/terms/>\nPREFIX dc: <http://purl.org/dc/terms/>\nPREFIX chebislash: <http://purl.obolibrary.org/obo/chebi/>\nPREFIX chebihash: <http://purl.obolibrary.org/obo/chebi#>\nPREFIX cco: <http://rdf.ebi.ac.uk/terms/chembl#>\nPREFIX busco: <http://busco.ezlab.org/schema#>\nPREFIX bibo: <http://purl.org/ontology/bibo/>\nPREFIX allie: <http://allie.dbcls.jp/>\nPREFIX SWISSLIPID: <https://swisslipids.org/rdf/SLM_>\nPREFIX GO: <http://purl.obolibrary.org/obo/GO_>\nPREFIX ECO: <http://purl.obolibrary.org/obo/ECO_>\nPREFIX CHEBI: <http://purl.obolibrary.org/obo/CHEBI_>\n\n\n            SELECT DISTINCT ?citation ?title ?year\nWHERE\n{\n    ?citation a up:Journal_Citation ;\n             up:author ?author ;\n             up:title ?title ;\n             up:date ?year .\n    FILTER(REGEX(?author, \"Bairoch\", \"i\"))\n}\n\n            LIMIT 20\n        ",
+   "is_orig_used": false,
+   "res": {
+      "head": {
+         "vars": [
+            "citation",
+            "title",
+            "year"
+         ]
+      },
+      "results": {
+         "bindings": [
+            {
+               "citation": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/citations/3481421"
+               },
+               "year": {
+                  "datatype": "http://www.w3.org/2001/XMLSchema#gYear",
+                  "type": "literal",
+                  "value": "1987"
+               },
+               "title": {
+                  "type": "literal",
+                  "value": "Evolutionary relationships between catabolic pathways for aromatics: conservation of gene order and nucleotide sequences of catechol oxidation genes of pWW0 and NAH7 plasmids."
+               }
+            },
+            {
+               "citation": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/citations/1740120"
+               },
+               "year": {
+                  "datatype": "http://www.w3.org/2001/XMLSchema#gYear",
+                  "type": "literal",
+                  "value": "1992"
+               },
+               "title": {
+                  "type": "literal",
+                  "value": "Cis-diol dehydrogenases encoded by the TOL pWW0 plasmid xylL gene and the Acinetobacter calcoaceticus chromosomal benD gene are members of the short-chain alcohol dehydrogenase superfamily."
+               }
+            },
+            {
+               "citation": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/citations/9600841"
+               },
+               "year": {
+                  "datatype": "http://www.w3.org/2001/XMLSchema#gYear",
+                  "type": "literal",
+                  "value": "1998"
+               },
+               "title": {
+                  "type": "literal",
+                  "value": "Protein identification with N and C-terminal sequence tags in proteome projects."
+               }
+            },
+            {
+               "citation": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/citations/12520024"
+               },
+               "year": {
+                  "datatype": "http://www.w3.org/2001/XMLSchema#gYear",
+                  "type": "literal",
+                  "value": "2003"
+               },
+               "title": {
+                  "type": "literal",
+                  "value": "The SWISS-PROT protein knowledgebase and its supplement TrEMBL in 2003."
+               }
+            },
+            {
+               "citation": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/citations/9163424"
+               },
+               "year": {
+                  "datatype": "http://www.w3.org/2001/XMLSchema#gYear",
+                  "type": "literal",
+                  "value": "1997"
+               },
+               "title": {
+                  "type": "literal",
+                  "value": "Molecular basis of symbiosis between Rhizobium and legumes."
+               }
+            },
+            {
+               "citation": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/citations/25944712"
+               },
+               "year": {
+                  "datatype": "http://www.w3.org/2001/XMLSchema#gYear",
+                  "type": "literal",
+                  "value": "2015"
+               },
+               "title": {
+                  "type": "literal",
+                  "value": "N-terminome analysis of the human mitochondrial proteome."
+               }
+            },
+            {
+               "citation": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/citations/8313870"
+               },
+               "year": {
+                  "datatype": "http://www.w3.org/2001/XMLSchema#gYear",
+                  "type": "literal",
+                  "value": "1993"
+               },
+               "title": {
+                  "type": "literal",
+                  "value": "Human liver protein map: update 1993."
+               }
+            },
+            {
+               "citation": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/citations/1286669"
+               },
+               "year": {
+                  "datatype": "http://www.w3.org/2001/XMLSchema#gYear",
+                  "type": "literal",
+                  "value": "1992"
+               },
+               "title": {
+                  "type": "literal",
+                  "value": "Human liver protein map: a reference database established by microsequencing and gel comparison."
+               }
+            },
+            {
+               "citation": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/citations/1885518"
+               },
+               "year": {
+                  "datatype": "http://www.w3.org/2001/XMLSchema#gYear",
+                  "type": "literal",
+                  "value": "1991"
+               },
+               "title": {
+                  "type": "literal",
+                  "value": "Nucleotide sequences of the Acinetobacter calcoaceticus benABC genes for benzoate 1,2-dioxygenase reveal evolutionary relationships among multicomponent oxygenases."
+               }
+            },
+            {
+               "citation": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/citations/2302168"
+               },
+               "year": {
+                  "datatype": "http://www.w3.org/2001/XMLSchema#gYear",
+                  "type": "literal",
+                  "value": "1990"
+               },
+               "title": {
+                  "type": "literal",
+                  "value": "Calcium-binding affinity and calcium-enhanced activity of Clostridium thermocellum endoglucanase D."
+               }
+            },
+            {
+               "citation": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/citations/8313871"
+               },
+               "year": {
+                  "datatype": "http://www.w3.org/2001/XMLSchema#gYear",
+                  "type": "literal",
+                  "value": "1993"
+               },
+               "title": {
+                  "type": "literal",
+                  "value": "Plasma and red blood cell protein maps: update 1993."
+               }
+            },
+            {
+               "citation": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/citations/24475127"
+               },
+               "year": {
+                  "datatype": "http://www.w3.org/2001/XMLSchema#gYear",
+                  "type": "literal",
+                  "value": "2014"
+               },
+               "title": {
+                  "type": "literal",
+                  "value": "C2orf62 and TTC17 Are Involved in Actin Organization and Ciliogenesis in Zebrafish and Human."
+               }
+            },
+            {
+               "citation": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/citations/9740056"
+               },
+               "year": {
+                  "datatype": "http://www.w3.org/2001/XMLSchema#gYear",
+                  "type": "literal",
+                  "value": "1998"
+               },
+               "title": {
+                  "type": "literal",
+                  "value": "'98 Escherichia coli SWISS-2DPAGE database update."
+               }
+            },
+            {
+               "citation": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/citations/9588799"
+               },
+               "year": {
+                  "datatype": "http://www.w3.org/2001/XMLSchema#gYear",
+                  "type": "literal",
+                  "value": "1998"
+               },
+               "title": {
+                  "type": "literal",
+                  "value": "Low molecular weight proteins: a challenge for post-genomic research."
+               }
+            },
+            {
+               "citation": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/citations/25229427"
+               },
+               "year": {
+                  "datatype": "http://www.w3.org/2001/XMLSchema#gYear",
+                  "type": "literal",
+                  "value": "2014"
+               },
+               "title": {
+                  "type": "literal",
+                  "value": "DERA is the human deoxyribose phosphate aldolase and is involved in stress response."
+               }
+            },
+            {
+               "citation": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/citations/8483504"
+               },
+               "year": {
+                  "datatype": "http://www.w3.org/2001/XMLSchema#gYear",
+                  "type": "literal",
+                  "value": "1993"
+               },
+               "title": {
+                  "type": "literal",
+                  "value": "Complementation of the DNA repair defect in Xeroderma pigmentosum group G cells by a human cDNA related to yeast RAD2."
+               }
+            },
+            {
+               "citation": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/citations/8248627"
+               },
+               "year": {
+                  "datatype": "http://www.w3.org/2001/XMLSchema#gYear",
+                  "type": "literal",
+                  "value": "1993"
+               },
+               "title": {
+                  "type": "literal",
+                  "value": "A diverse transketolase family that includes the RecP protein of Streptococcus pneumoniae, a protein implicated in genetic recombination."
+               }
+            },
+            {
+               "citation": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/citations/9548970"
+               },
+               "year": {
+                  "datatype": "http://www.w3.org/2001/XMLSchema#gYear",
+                  "type": "literal",
+                  "value": "1998"
+               },
+               "title": {
+                  "type": "literal",
+                  "value": "New insulin-like proteins with atypical disulfide bond pattern characterized in Caenorhabditis elegans by comparative sequence analysis and homology modeling."
+               }
+            },
+            {
+               "citation": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/citations/1938949"
+               },
+               "year": {
+                  "datatype": "http://www.w3.org/2001/XMLSchema#gYear",
+                  "type": "literal",
+                  "value": "1991"
+               },
+               "title": {
+                  "type": "literal",
+                  "value": "Potential DNA slippage structures acquired during evolutionary divergence of Acinetobacter calcoaceticus chromosomal benABC and Pseudomonas putida TOL pWW0 plasmid xylXYZ, genes encoding benzoate dioxygenases."
+               }
+            },
+            {
+               "citation": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/citations/3475526"
+               },
+               "year": {
+                  "datatype": "http://www.w3.org/2001/XMLSchema#gYear",
+                  "type": "literal",
+                  "value": "1987"
+               },
+               "title": {
+                  "type": "literal",
+                  "value": "The xylS gene positive regulator of TOL plasmid pWWO: identification, sequence analysis and overproduction leading to constitutive expression of meta cleavage operon."
+               }
+            }
+         ]
+      }
+   },
+   "error_msg": "",
+   "error_type": "",
+   "attempt": 1
+}

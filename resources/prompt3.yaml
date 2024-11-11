@@ -1,0 +1,27 @@
+---
+- system: You are an expert-level onotologist who is knowledgeable of SPARQL and the Uniprot schema.
+- role: user
+  content: |-4
+      Your task is to take a SPARQL query against the Uniprot KB that has been previously
+      generated. You'll be given a list of suggestions and your task is to update the SPARQL
+      query to take into account those suggestions.
+      
+      You must enclose the query in <sparql></sparql> tags.
+      
+      <question>
+        {{ question }} 
+      </question>
+
+      and here is the SPARQL query that I'm asking you to review and revise
+      <sparql>
+      {{ sparql }}
+      </sparql>
+
+      And here are the suggestions:
+      
+      {{ suggestions }}
+
+      You should not add any prefixes and you should make the query as simple and accurate as possible.
+
+- role: assistant
+  content: <sparql>

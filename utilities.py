@@ -2,28 +2,74 @@
 This module contains code that is shared amongst the Jupyter notebooks.
 """
 
-from typing import Callable
+from typing import Tuple
 import os
 import re
 import json
 import csv
+import shutil
 from pathlib import Path
 from functools import partial
 from typing import List, Union, Optional
 from typing import Any as JsonType
+from time import sleep
+from itertools import count
 
 import requests
 from botocore.exceptions import ClientError
 from botocore.awsrequest import AWSRequest
 from botocore.auth import SigV4Auth
 
+
+def extract_tag(response: str, name: str, greedy: bool = True) -> Tuple[str, int]:
+    """
+    >>> extract_tag("foo <a>baz</a> bar", "a")
+    ('baz', 10)
+
+    """
+    patn = f"<{name}>(.*)</{name}>" if greedy else\
+           f"<{name}>(.*?)</{name}>"
+    match = re.search(patn, response, re.DOTALL)
+    if match:
+        return match.group(1).strip(), match.end(1)
+    else:
+        #print(f"Couldn't find tag <{name}>; trying without")
+        patn2 = f"(.*)</{name}"
+        match2 = re.search(patn2, response, re.DOTALL)
+        if match2:
+            return match2.group(1).strip(), match2.end(1)
+        else:
+            #print(f"Couldn't find tag <{name}> or </{name}>; giving up")
+            return None, -1
+
+
+def extract_multiple_tags(response: str, name: str) -> List[str]:
+    result = []
+    for iter in count(0):
+        if iter > 50:
+            return result
+        contents, next_idx = extract_tag(response, name, greedy=False)
+        # print(f"contents {contents} next_idx {next_idx}")
+        if contents is None:
+            return result
+        result.append(contents)
+        response = response[next_idx+len(name)+3:]
+        # print(f"response -> {response}\n-----------")
+
+
+'''
+Get Neptune notebook environment variable
+'''
 def get_neptune_env(var: str) -> str:
     """
     Return the value of a Neptune environment variable.
     """
     return os.popen(f"source ~/.bashrc ; echo ${var}").read().split("\n")[0]
 
-
+'''
+Invoke Bedrock runtime for given model_id using specified system, messages, temperature.
+Return LLM response.
+'''
 def run_bedrock(system: str,
                 messages: List,
                 temperature: float,
@@ -32,34 +78,35 @@ def run_bedrock(system: str,
     """
     The input string is the prompt. Run the model on the prompt and return the response.
     """
-    try:
-        response = bedrock_runtime.invoke_model(
-            modelId=model_id,
-            body=json.dumps(
-                {
-                    "anthropic_version": "bedrock-2023-05-31",
-                    "max_tokens": 1024,
-                    "temperature": temperature,
-                    "messages": [
-                        {
-                            "role": "user",
-                            "content": [{"type": "text", "text": prompt}],
-                        }
-                    ],
-                }
-            ),
-        )
-        
-        
-        result = json.loads(response.get("body").read())
-        output_list = result.get("content", [])
-        return "".join(output["text"] for output in output_list
-                       if output["type"] == "text")
-    except ClientError as err:
-        print(f"Error invoking {model_id}: {err.response['Error']['Code']} "
-              f"{err.response['Error']['Message']}")
-        raise err
+    for retry in range(20):
+        try:
+            response = bedrock_runtime.invoke_model(
+                modelId=model_id,
+                body=json.dumps(
+                    {
+                        "anthropic_version": "bedrock-2023-05-31",
+                        "max_tokens": 1024,
+                        "temperature": temperature,
+                        "system": system,
+                        "messages": messages
+                    }
+                ),
+            )
 
+
+            result = json.loads(response.get("body").read())
+            output_list = result.get("content", [])
+            return "".join(output["text"] for output in output_list
+                           if output["type"] == "text")
+        except ClientError as err:
+            print(f"Error invoking {model_id}: {err.response['Error']['Code']} "
+                  f"{err.response['Error']['Message']}")
+            if "ThrottlingException" in str(err):
+                print(f"Throttled; retry #{retry}")
+                sleep(5.0)
+            else:
+                raise ex
+    return None
 
 
 # Grab Neptune cluster host/port from notebook instance environment variables
@@ -71,8 +118,12 @@ AWS_REGION = get_neptune_env("AWS_REGION")
 USE_IAM_AUTH = GRAPH_NOTEBOOK_AUTH_MODE != "DEFAULT"
 NEPTUNE_ENDPOINT = f"https://{GRAPH_NOTEBOOK_HOST}:{GRAPH_NOTEBOOK_PORT}/sparql"
 
+'''
+Run SPARQL query against Neptune database.
+Return SPARQL result.
+'''
 def execute_sparql(query: str,
-                   sagemaker_session,
+                   sagemaker_session=None,
                    crud_type: str = "query"):
     request_data = {crud_type: query}
     data = request_data
@@ -122,9 +173,16 @@ def execute_sparql(query: str,
         print(f"CRUD type is *{crud_type}*")
         print(f"Here is the result:\n{response.text}\n")
         raise e
+
+'''
+Run SPARQL query against Uniprot reference site.
+Return SPARQL result.
+'''
         
 UNIPROT_REF_ENDPOINT="https://sparql.uniprot.org/sparql"
-def execute_sparql_uniprotref(query: str):
+UNIPROT_TIMEOUT_SEC=600
+def execute_sparql_uniprotref(query: str, session=None):
+
     request_data = query.strip()
     data = request_data
     request_hdr = {}
@@ -132,7 +190,7 @@ def execute_sparql_uniprotref(query: str):
     request_hdr['Accept']='application/sparql-results+json'
 
     response = requests.request(
-        method="POST", url=UNIPROT_REF_ENDPOINT, headers=request_hdr, data=data
+        method="POST", url=UNIPROT_REF_ENDPOINT, headers=request_hdr, data=data, timeout=UNIPROT_TIMEOUT_SEC
     )
     if str(response.status_code) != "200":
         print(f"Query error {response.status_code} {response.text}")
@@ -149,36 +207,77 @@ def execute_sparql_uniprotref(query: str):
         print(f"Here is the query:\n{query}\n")
         print(f"Here is the result:\n{response.text}\n")
         raise e
+ 
+'''
+Write a SPARQL result to {folder_name}/{file_prefix}.json
+The file is a JSON that contains:
+- question: The natural language question
+- expected_sparql: The SPARQL we expect for that question
+- actual_sparql: The SPARQL actually generated for that question
+    If you pass a string, that string is the actual sparql
+    If you pass an array of two strings, the first is the originally-generated SPARQL; the second is the SPARQL with suggestions incorporated
+- res: The SPARQL result from running the actual_sparql
+- error_msg: If there was an error running the SPARQL
+- is_orig_used:
+    If you pass an array for actual_sparql, pass True if the actual SPARQL is the first (original) value; pass False if the actual is the second.
+- attempt: 1 for first attempt; 2, 3, .. for retries
+    If attempt>1, backup the result for previous attempt as {folder_name}/{file_prefix}_{attempt-1}.json
+'''
+ERR_TIMEOUT="timeout"
+ERR_BLANK="blank"
+ERR_OTHER="x"
+ERR_NONE=""
+def write_sparql_res(folder_name, file_prefix, question, expected_sparql, actual_sparql, res, error_msg, 
+    is_orig_used=False, attempt=1):
+    
+    # retry logic
+    file_name=f"{folder_name}/{file_prefix}.json"
+    attempt_file_name=f"{folder_name}/{file_prefix}_{attempt-1}.json"    
+    if attempt>1:
+        shutil.copy(file_name, attempt_file_name)
+
+    #
+    # error logic
+    #
+    def is_blank(res):
+        if  'boolean' in res:
+            return False
+        if not ("head" in res) or not("vars" in res["head"]):
+            return False
+        return not ("results" in res) or not("bindings" in res["results"]) or (len(res["results"]["bindings"]) == 0)
+
+    # Based on error message, also set error_type
+    error_type=ERR_NONE 
+    if len(error_msg) > 0:
+        if "Read timed out" in error_msg:
+            error_type=ERR_TIMEOUT
+        else:
+            error_type=ERR_OTHER
+    elif is_blank(res):
+        # no results is a blank error
+        error_type=ERR_BLANK
         
-def write_sparql_res(folder_name, file_prefix, question, expected_sparql, actual_sparql, res, error_msg):
+    # classify the sparql query
+    act_list=isinstance(actual_sparql, list)
+    initial_sparql=actual_sparql[0] if act_list else None
+    improved_sparql=actual_sparql[1] if act_list else None
+    actual_sparql=actual_sparql[2] if act_list else actual_sparql
+    
+    # ok write it
     res_record = {
         'question': question, 
         'expected_sparql': expected_sparql,
+        'initial_sparql': initial_sparql,
+        'improved_sparql': improved_sparql,
         'actual_sparql': actual_sparql,
+        'is_orig_used': is_orig_used,
         'res': res,
-        'error_msg': error_msg
+        'error_msg': error_msg,
+        'error_type': error_type,
+        'attempt': attempt
     }
-    with open(f"{folder_name}/{file_prefix}.json", 'w') as resfile: 
+    with open(file_name, 'w') as resfile: 
         resfile.write(json.dumps(res_record, indent=3))
+    return res_record
 
         
-def make_report(folder_name):
-
-    files=os.listdir(folder_name)
-
-    with open(f'{folder_name}_report.csv', 'w', newline='') as csvfile:
-        writer = csv.writer(csvfile)
-        writer.writerow(["qfile","question", "numresults", "errormsg", "expected_sparql", "gen_sparql"])
-        for fn in files:
-            with open(f"{folder_name}/{fn}", 'r') as jfile: 
-                j = json.load(jfile)
-                index=fn.split(".")[0]
-                nlq=j['question'].replace("\n", "")
-                error_msg=j['error_msg'].replace("\n", "")
-                expected_sparql=j['expected_sparql'].replace("\n", "")
-                gen_sparql=j['actual_sparql'].replace("\n", "")
-                res=j['res']
-                num_results=len(res['results']['bindings']) if 'results' in res and 'bindings' in res['results'] else 0
-                writer.writerow([index, nlq, num_results, error_msg, expected_sparql, gen_sparql])
-
-

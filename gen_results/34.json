@@ -1,0 +1,304 @@
+{
+   "question": "Find the Rhea and Interpro combinations in UniProtKB entries",
+   "expected_sparql": "SELECT \n    ?interpro\n    ?rhea\nFROM <http://sparql.uniprot.org/uniprot>\nWHERE \n{\n  ?protein up:reviewed true .\n  ?protein up:annotation ?annotation .\n  ?annotation up:catalyticActivity ?rhea .\n  ?protein rdfs:seeAlso ?interpro .\n  ?interpro up:database <http://purl.uniprot.org/database/InterPro> .\n} ORDER BY ?rhea\n",
+   "initial_sparql": "SELECT DISTINCT ?protein ?rhea ?interpro\nWHERE {\n    ?protein a up:Protein ;\n            up:annotation ?ca_annotation ;\n            rdfs:seeAlso ?interpro .\n    ?ca_annotation a up:Catalytic_Activity_Annotation ;\n                  up:catalyticActivity/up:catalyzedReaction ?rhea .\n    ?interpro up:database <http://purl.uniprot.org/database/InterPro> .\n}",
+   "improved_sparql": "SELECT (DISTINCT ?protein) (DISTINCT ?rhea) (DISTINCT ?interpro) ?interpro_label\nWHERE {\n    ?protein up:annotation ?ca_annotation ;\n            up:annotation/rdfs:seeAlso ?interpro .\n    ?ca_annotation a up:Catalytic_Activity_Annotation ;\n                  up:catalyticActivity/up:catalyzedReaction ?rhea .\n    ?interpro up:database <http://purl.uniprot.org/database/InterPro> ;\n              rdfs:label ?interpro_label .\n    FILTER(STRSTARTS(STR(?rhea), \"http://purl.uniprot.org/rhea/\"))\n}",
+   "actual_sparql": "\n            PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>\nPREFIX wikibase: <http://wikiba.se/ontology#>\nPREFIX wdt: <http://www.wikidata.org/prop/direct/>\nPREFIX wd: <http://www.wikidata.org/entity/>\nPREFIX vg: <http://biohackathon.org/resource/vg#>\nPREFIX up: <http://purl.uniprot.org/core/>\nPREFIX uniprotkb: <http://purl.uniprot.org/uniprot/>\nPREFIX uberon: <http://purl.obolibrary.org/obo/uo#>\nPREFIX taxon: <http://purl.uniprot.org/taxonomy/>\nPREFIX sp: <http://spinrdf.org/sp#>\nPREFIX skos: <http://www.w3.org/2004/02/skos/core#>\nPREFIX sio: <http://semanticscience.org/resource/>\nPREFIX sh: <http://www.w3.org/ns/shacl#>\nPREFIX schema: <http://schema.org/>\nPREFIX sachem: <http://bioinfo.uochb.cas.cz/rdf/v1.0/sachem#>\nPREFIX rh: <http://rdf.rhea-db.org/>\nPREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\nPREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\nPREFIX pubmed: <http://rdf.ncbi.nlm.nih.gov/pubmed/>\nPREFIX ps: <http://www.wikidata.org/prop/statement/>\nPREFIX pq: <http://www.wikidata.org/prop/qualifier/>\nPREFIX patent: <http://data.epo.org/linked-data/def/patent/>\nPREFIX p: <http://www.wikidata.org/prop/>\nPREFIX owl: <http://www.w3.org/2002/07/owl#>\nPREFIX orthodbGroup: <http://purl.orthodb.org/odbgroup/>\nPREFIX orthodb: <http://purl.orthodb.org/>\nPREFIX orth: <http://purl.org/net/orth#>\nPREFIX obo: <http://purl.obolibrary.org/obo/>\nPREFIX np: <http://nextprot.org/rdf#>\nPREFIX nextprot: <http://nextprot.org/rdf/entry/>\nPREFIX mnx: <https://rdf.metanetx.org/schema/>\nPREFIX mnet: <https://rdf.metanetx.org/mnet/>\nPREFIX mesh: <http://id.nlm.nih.gov/mesh/>\nPREFIX lscr: <http://purl.org/lscr#>\nPREFIX lipidmaps: <https://www.lipidmaps.org/rdf/>\nPREFIX keywords: <http://purl.uniprot.org/keywords/>\nPREFIX insdcschema: <http://ddbj.nig.ac.jp/ontologies/nucleotide/>\nPREFIX insdc: <http://identifiers.org/insdc/>\nPREFIX identifiers: <http://identifiers.org/>\nPREFIX glyconnect: <https://purl.org/glyconnect/>\nPREFIX glycan: <http://purl.jp/bio/12/glyco/glycan#>\nPREFIX genex: <http://purl.org/genex#>\nPREFIX foaf: <http://xmlns.com/foaf/0.1/>\nPREFIX faldo: <http://biohackathon.org/resource/faldo#>\nPREFIX eunisSpecies: <http://eunis.eea.europa.eu/rdf/species-schema.rdf#>\nPREFIX ensembltranscript: <http://rdf.ebi.ac.uk/resource/ensembl.transcript/>\nPREFIX ensemblterms: <http://rdf.ebi.ac.uk/terms/ensembl/>\nPREFIX ensemblprotein: <http://rdf.ebi.ac.uk/resource/ensembl.protein/>\nPREFIX ensemblexon: <http://rdf.ebi.ac.uk/resource/ensembl.exon/>\nPREFIX ensembl: <http://rdf.ebi.ac.uk/resource/ensembl/>\nPREFIX ec: <http://purl.uniprot.org/enzyme/>\nPREFIX dcterms: <http://purl.org/dc/terms/>\nPREFIX dc: <http://purl.org/dc/terms/>\nPREFIX chebislash: <http://purl.obolibrary.org/obo/chebi/>\nPREFIX chebihash: <http://purl.obolibrary.org/obo/chebi#>\nPREFIX cco: <http://rdf.ebi.ac.uk/terms/chembl#>\nPREFIX busco: <http://busco.ezlab.org/schema#>\nPREFIX bibo: <http://purl.org/ontology/bibo/>\nPREFIX allie: <http://allie.dbcls.jp/>\nPREFIX SWISSLIPID: <https://swisslipids.org/rdf/SLM_>\nPREFIX GO: <http://purl.obolibrary.org/obo/GO_>\nPREFIX ECO: <http://purl.obolibrary.org/obo/ECO_>\nPREFIX CHEBI: <http://purl.obolibrary.org/obo/CHEBI_>\n\n\n            SELECT DISTINCT ?protein ?rhea ?interpro\nWHERE {\n    ?protein a up:Protein ;\n            up:annotation ?ca_annotation ;\n            rdfs:seeAlso ?interpro .\n    ?ca_annotation a up:Catalytic_Activity_Annotation ;\n                  up:catalyticActivity/up:catalyzedReaction ?rhea .\n    ?interpro up:database <http://purl.uniprot.org/database/InterPro> .\n}\n\n            LIMIT 20\n        ",
+   "is_orig_used": true,
+   "res": {
+      "head": {
+         "vars": [
+            "protein",
+            "rhea",
+            "interpro"
+         ]
+      },
+      "results": {
+         "bindings": [
+            {
+               "protein": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/uniprot/A0A1A2T9H2"
+               },
+               "rhea": {
+                  "type": "uri",
+                  "value": "http://rdf.rhea-db.org/11148"
+               },
+               "interpro": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/interpro/IPR000119"
+               }
+            },
+            {
+               "protein": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/uniprot/Q9XB18"
+               },
+               "rhea": {
+                  "type": "uri",
+                  "value": "http://rdf.rhea-db.org/11148"
+               },
+               "interpro": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/interpro/IPR000119"
+               }
+            },
+            {
+               "protein": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/uniprot/Q73VI9"
+               },
+               "rhea": {
+                  "type": "uri",
+                  "value": "http://rdf.rhea-db.org/11148"
+               },
+               "interpro": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/interpro/IPR000119"
+               }
+            },
+            {
+               "protein": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/uniprot/P9WMK6"
+               },
+               "rhea": {
+                  "type": "uri",
+                  "value": "http://rdf.rhea-db.org/11148"
+               },
+               "interpro": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/interpro/IPR000119"
+               }
+            },
+            {
+               "protein": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/uniprot/P9WMK7"
+               },
+               "rhea": {
+                  "type": "uri",
+                  "value": "http://rdf.rhea-db.org/11148"
+               },
+               "interpro": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/interpro/IPR000119"
+               }
+            },
+            {
+               "protein": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/uniprot/A0A0M2ZNH8"
+               },
+               "rhea": {
+                  "type": "uri",
+                  "value": "http://rdf.rhea-db.org/11148"
+               },
+               "interpro": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/interpro/IPR000119"
+               }
+            },
+            {
+               "protein": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/uniprot/Q9ZHC5"
+               },
+               "rhea": {
+                  "type": "uri",
+                  "value": "http://rdf.rhea-db.org/11148"
+               },
+               "interpro": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/interpro/IPR000119"
+               }
+            },
+            {
+               "protein": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/uniprot/A0A829QHE0"
+               },
+               "rhea": {
+                  "type": "uri",
+                  "value": "http://rdf.rhea-db.org/11148"
+               },
+               "interpro": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/interpro/IPR000119"
+               }
+            },
+            {
+               "protein": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/uniprot/A0A829MEM8"
+               },
+               "rhea": {
+                  "type": "uri",
+                  "value": "http://rdf.rhea-db.org/11148"
+               },
+               "interpro": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/interpro/IPR000119"
+               }
+            },
+            {
+               "protein": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/uniprot/A0AAD2XUG5"
+               },
+               "rhea": {
+                  "type": "uri",
+                  "value": "http://rdf.rhea-db.org/11148"
+               },
+               "interpro": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/interpro/IPR000119"
+               }
+            },
+            {
+               "protein": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/uniprot/A0A829HUZ0"
+               },
+               "rhea": {
+                  "type": "uri",
+                  "value": "http://rdf.rhea-db.org/11148"
+               },
+               "interpro": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/interpro/IPR000119"
+               }
+            },
+            {
+               "protein": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/uniprot/A0AA91M7F2"
+               },
+               "rhea": {
+                  "type": "uri",
+                  "value": "http://rdf.rhea-db.org/11148"
+               },
+               "interpro": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/interpro/IPR000119"
+               }
+            },
+            {
+               "protein": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/uniprot/A0A9P2M537"
+               },
+               "rhea": {
+                  "type": "uri",
+                  "value": "http://rdf.rhea-db.org/11148"
+               },
+               "interpro": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/interpro/IPR000119"
+               }
+            },
+            {
+               "protein": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/uniprot/A0A853LNI7"
+               },
+               "rhea": {
+                  "type": "uri",
+                  "value": "http://rdf.rhea-db.org/11148"
+               },
+               "interpro": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/interpro/IPR000119"
+               }
+            },
+            {
+               "protein": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/uniprot/A0AAE5J4U3"
+               },
+               "rhea": {
+                  "type": "uri",
+                  "value": "http://rdf.rhea-db.org/11148"
+               },
+               "interpro": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/interpro/IPR000119"
+               }
+            },
+            {
+               "protein": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/uniprot/A0A9Q7WM78"
+               },
+               "rhea": {
+                  "type": "uri",
+                  "value": "http://rdf.rhea-db.org/11148"
+               },
+               "interpro": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/interpro/IPR000119"
+               }
+            },
+            {
+               "protein": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/uniprot/A0A0H3A054"
+               },
+               "rhea": {
+                  "type": "uri",
+                  "value": "http://rdf.rhea-db.org/11148"
+               },
+               "interpro": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/interpro/IPR000119"
+               }
+            },
+            {
+               "protein": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/uniprot/A0A829PYN0"
+               },
+               "rhea": {
+                  "type": "uri",
+                  "value": "http://rdf.rhea-db.org/11148"
+               },
+               "interpro": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/interpro/IPR000119"
+               }
+            },
+            {
+               "protein": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/uniprot/A0A3S5Y981"
+               },
+               "rhea": {
+                  "type": "uri",
+                  "value": "http://rdf.rhea-db.org/11148"
+               },
+               "interpro": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/interpro/IPR000119"
+               }
+            },
+            {
+               "protein": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/uniprot/A0AAE3BKR9"
+               },
+               "rhea": {
+                  "type": "uri",
+                  "value": "http://rdf.rhea-db.org/11148"
+               },
+               "interpro": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/interpro/IPR000119"
+               }
+            }
+         ]
+      }
+   },
+   "error_msg": "",
+   "error_type": "",
+   "attempt": 3
+}

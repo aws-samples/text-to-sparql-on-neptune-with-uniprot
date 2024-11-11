@@ -1,0 +1,223 @@
+{
+   "question": "Find UniProtKB entries with more than 1 Topological domain annotation",
+   "expected_sparql": "SELECT \n    ?protein \n    (GROUP_CONCAT(?comment; separator=\", \") AS ?comments)\nWHERE\n{\n    ?protein a up:Protein ;\n            up:annotation ?annotation . \n    ?annotation rdf:type up:Topological_Domain_Annotation ;\n            rdfs:comment ?comment .\n} \nGROUP BY ?protein \nHAVING (COUNT(?annotation) > 1)\n",
+   "initial_sparql": null,
+   "improved_sparql": null,
+   "actual_sparql": "PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>\nPREFIX wikibase: <http://wikiba.se/ontology#>\nPREFIX wdt: <http://www.wikidata.org/prop/direct/>\nPREFIX wd: <http://www.wikidata.org/entity/>\nPREFIX vg: <http://biohackathon.org/resource/vg#>\nPREFIX up: <http://purl.uniprot.org/core/>\nPREFIX uniprotkb: <http://purl.uniprot.org/uniprot/>\nPREFIX uberon: <http://purl.obolibrary.org/obo/uo#>\nPREFIX taxon: <http://purl.uniprot.org/taxonomy/>\nPREFIX sp: <http://spinrdf.org/sp#>\nPREFIX skos: <http://www.w3.org/2004/02/skos/core#>\nPREFIX sio: <http://semanticscience.org/resource/>\nPREFIX sh: <http://www.w3.org/ns/shacl#>\nPREFIX schema: <http://schema.org/>\nPREFIX sachem: <http://bioinfo.uochb.cas.cz/rdf/v1.0/sachem#>\nPREFIX rh: <http://rdf.rhea-db.org/>\nPREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\nPREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\nPREFIX pubmed: <http://rdf.ncbi.nlm.nih.gov/pubmed/>\nPREFIX ps: <http://www.wikidata.org/prop/statement/>\nPREFIX pq: <http://www.wikidata.org/prop/qualifier/>\nPREFIX patent: <http://data.epo.org/linked-data/def/patent/>\nPREFIX p: <http://www.wikidata.org/prop/>\nPREFIX owl: <http://www.w3.org/2002/07/owl#>\nPREFIX orthodbGroup: <http://purl.orthodb.org/odbgroup/>\nPREFIX orthodb: <http://purl.orthodb.org/>\nPREFIX orth: <http://purl.org/net/orth#>\nPREFIX obo: <http://purl.obolibrary.org/obo/>\nPREFIX np: <http://nextprot.org/rdf#>\nPREFIX nextprot: <http://nextprot.org/rdf/entry/>\nPREFIX mnx: <https://rdf.metanetx.org/schema/>\nPREFIX mnet: <https://rdf.metanetx.org/mnet/>\nPREFIX mesh: <http://id.nlm.nih.gov/mesh/>\nPREFIX lscr: <http://purl.org/lscr#>\nPREFIX lipidmaps: <https://www.lipidmaps.org/rdf/>\nPREFIX keywords: <http://purl.uniprot.org/keywords/>\nPREFIX insdcschema: <http://ddbj.nig.ac.jp/ontologies/nucleotide/>\nPREFIX insdc: <http://identifiers.org/insdc/>\nPREFIX identifiers: <http://identifiers.org/>\nPREFIX glyconnect: <https://purl.org/glyconnect/>\nPREFIX glycan: <http://purl.jp/bio/12/glyco/glycan#>\nPREFIX genex: <http://purl.org/genex#>\nPREFIX foaf: <http://xmlns.com/foaf/0.1/>\nPREFIX faldo: <http://biohackathon.org/resource/faldo#>\nPREFIX eunisSpecies: <http://eunis.eea.europa.eu/rdf/species-schema.rdf#>\nPREFIX ensembltranscript: <http://rdf.ebi.ac.uk/resource/ensembl.transcript/>\nPREFIX ensemblterms: <http://rdf.ebi.ac.uk/terms/ensembl/>\nPREFIX ensemblprotein: <http://rdf.ebi.ac.uk/resource/ensembl.protein/>\nPREFIX ensemblexon: <http://rdf.ebi.ac.uk/resource/ensembl.exon/>\nPREFIX ensembl: <http://rdf.ebi.ac.uk/resource/ensembl/>\nPREFIX ec: <http://purl.uniprot.org/enzyme/>\nPREFIX dcterms: <http://purl.org/dc/terms/>\nPREFIX dc: <http://purl.org/dc/terms/>\nPREFIX chebislash: <http://purl.obolibrary.org/obo/chebi/>\nPREFIX chebihash: <http://purl.obolibrary.org/obo/chebi#>\nPREFIX cco: <http://rdf.ebi.ac.uk/terms/chembl#>\nPREFIX busco: <http://busco.ezlab.org/schema#>\nPREFIX bibo: <http://purl.org/ontology/bibo/>\nPREFIX allie: <http://allie.dbcls.jp/>\nPREFIX SWISSLIPID: <https://swisslipids.org/rdf/SLM_>\nPREFIX GO: <http://purl.obolibrary.org/obo/GO_>\nPREFIX ECO: <http://purl.obolibrary.org/obo/ECO_>\nPREFIX CHEBI: <http://purl.obolibrary.org/obo/CHEBI_>\n\n\n    SELECT \n    ?protein \n    (GROUP_CONCAT(?comment; separator=\", \") AS ?comments)\nWHERE\n{\n    ?protein a up:Protein ;\n            up:annotation ?annotation . \n    ?annotation rdf:type up:Topological_Domain_Annotation ;\n            rdfs:comment ?comment .\n} \nGROUP BY ?protein \nHAVING (COUNT(?annotation) > 1)\n\n\n    LIMIT 20",
+   "is_orig_used": false,
+   "res": {
+      "head": {
+         "vars": [
+            "protein",
+            "comments"
+         ]
+      },
+      "results": {
+         "bindings": [
+            {
+               "comments": {
+                  "type": "literal",
+                  "value": "Lumenal, Cytoplasmic, Cytoplasmic"
+               },
+               "protein": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/uniprot/A0A1J6JS64"
+               }
+            },
+            {
+               "comments": {
+                  "type": "literal",
+                  "value": "Virion surface, Intravirion"
+               },
+               "protein": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/uniprot/A0A2D3R5S0"
+               }
+            },
+            {
+               "comments": {
+                  "type": "literal",
+                  "value": "Virion surface, Intravirion"
+               },
+               "protein": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/uniprot/Q38T39"
+               }
+            },
+            {
+               "comments": {
+                  "type": "literal",
+                  "value": "Periplasmic, Cytoplasmic, Periplasmic, Cytoplasmic, Periplasmic"
+               },
+               "protein": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/uniprot/P0ABP7"
+               }
+            },
+            {
+               "comments": {
+                  "type": "literal",
+                  "value": "Cytoplasmic, Periplasmic"
+               },
+               "protein": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/uniprot/A0A329WCT0"
+               }
+            },
+            {
+               "comments": {
+                  "type": "literal",
+                  "value": "Cytoplasmic, Extracellular, Cytoplasmic"
+               },
+               "protein": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/uniprot/A0A097F4V6"
+               }
+            },
+            {
+               "comments": {
+                  "type": "literal",
+                  "value": "Intravirion, Virion surface"
+               },
+               "protein": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/uniprot/A0A0N9RQ90"
+               }
+            },
+            {
+               "comments": {
+                  "type": "literal",
+                  "value": "Periplasmic, Periplasmic, Cytoplasmic, Cytoplasmic, Cytoplasmic, Periplasmic, Periplasmic"
+               },
+               "protein": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/uniprot/P67145"
+               }
+            },
+            {
+               "comments": {
+                  "type": "literal",
+                  "value": "Cytoplasmic, Lumenal"
+               },
+               "protein": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/uniprot/Q29043"
+               }
+            },
+            {
+               "comments": {
+                  "type": "literal",
+                  "value": "Cytoplasmic, Lumenal, Lumenal, Cytoplasmic, Lumenal"
+               },
+               "protein": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/uniprot/A0A8H4VH82"
+               }
+            },
+            {
+               "comments": {
+                  "type": "literal",
+                  "value": "Cytoplasmic, Extracellular"
+               },
+               "protein": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/uniprot/B3UJ01"
+               }
+            },
+            {
+               "comments": {
+                  "type": "literal",
+                  "value": "Virion surface, Intravirion"
+               },
+               "protein": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/uniprot/M9ZUD2"
+               }
+            },
+            {
+               "comments": {
+                  "type": "literal",
+                  "value": "Periplasmic, Cytoplasmic"
+               },
+               "protein": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/uniprot/A0A2V5DXA7"
+               }
+            },
+            {
+               "comments": {
+                  "type": "literal",
+                  "value": "Intravirion, Virion surface"
+               },
+               "protein": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/uniprot/A0A0A7LV17"
+               }
+            },
+            {
+               "comments": {
+                  "type": "literal",
+                  "value": "Intravirion, Virion surface"
+               },
+               "protein": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/uniprot/A0A0X7YWL5"
+               }
+            },
+            {
+               "comments": {
+                  "type": "literal",
+                  "value": "Cytoplasmic, Periplasmic, Cytoplasmic, Cytoplasmic, Periplasmic"
+               },
+               "protein": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/uniprot/A0A737RPA1"
+               }
+            },
+            {
+               "comments": {
+                  "type": "literal",
+                  "value": "Cytoplasmic, Extracellular"
+               },
+               "protein": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/uniprot/A0A6J3WI03"
+               }
+            },
+            {
+               "comments": {
+                  "type": "literal",
+                  "value": "Cytoplasmic, Periplasmic"
+               },
+               "protein": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/uniprot/A0A1I2A4X7"
+               }
+            },
+            {
+               "comments": {
+                  "type": "literal",
+                  "value": "Virion surface, Intravirion"
+               },
+               "protein": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/uniprot/A0A2D3QMK6"
+               }
+            },
+            {
+               "comments": {
+                  "type": "literal",
+                  "value": "Periplasmic, Cytoplasmic"
+               },
+               "protein": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/uniprot/X2H8T3"
+               }
+            }
+         ]
+      }
+   },
+   "error_msg": "",
+   "error_type": "",
+   "attempt": 1
+}

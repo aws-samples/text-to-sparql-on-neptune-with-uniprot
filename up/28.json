@@ -1,0 +1,223 @@
+{
+   "question": "Find the longest comment text associated with a UniProtKB Natural Variant Annotation. Return the annotation and the comment",
+   "expected_sparql": "SELECT \n    ?annotation ?comment\nWHERE {\n    ?annotation a up:Natural_Variant_Annotation ;\n        rdfs:comment ?comment . \n} \nORDER BY DESC(STRLEN(?comment))\n",
+   "initial_sparql": null,
+   "improved_sparql": null,
+   "actual_sparql": "PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>\nPREFIX wikibase: <http://wikiba.se/ontology#>\nPREFIX wdt: <http://www.wikidata.org/prop/direct/>\nPREFIX wd: <http://www.wikidata.org/entity/>\nPREFIX vg: <http://biohackathon.org/resource/vg#>\nPREFIX up: <http://purl.uniprot.org/core/>\nPREFIX uniprotkb: <http://purl.uniprot.org/uniprot/>\nPREFIX uberon: <http://purl.obolibrary.org/obo/uo#>\nPREFIX taxon: <http://purl.uniprot.org/taxonomy/>\nPREFIX sp: <http://spinrdf.org/sp#>\nPREFIX skos: <http://www.w3.org/2004/02/skos/core#>\nPREFIX sio: <http://semanticscience.org/resource/>\nPREFIX sh: <http://www.w3.org/ns/shacl#>\nPREFIX schema: <http://schema.org/>\nPREFIX sachem: <http://bioinfo.uochb.cas.cz/rdf/v1.0/sachem#>\nPREFIX rh: <http://rdf.rhea-db.org/>\nPREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\nPREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\nPREFIX pubmed: <http://rdf.ncbi.nlm.nih.gov/pubmed/>\nPREFIX ps: <http://www.wikidata.org/prop/statement/>\nPREFIX pq: <http://www.wikidata.org/prop/qualifier/>\nPREFIX patent: <http://data.epo.org/linked-data/def/patent/>\nPREFIX p: <http://www.wikidata.org/prop/>\nPREFIX owl: <http://www.w3.org/2002/07/owl#>\nPREFIX orthodbGroup: <http://purl.orthodb.org/odbgroup/>\nPREFIX orthodb: <http://purl.orthodb.org/>\nPREFIX orth: <http://purl.org/net/orth#>\nPREFIX obo: <http://purl.obolibrary.org/obo/>\nPREFIX np: <http://nextprot.org/rdf#>\nPREFIX nextprot: <http://nextprot.org/rdf/entry/>\nPREFIX mnx: <https://rdf.metanetx.org/schema/>\nPREFIX mnet: <https://rdf.metanetx.org/mnet/>\nPREFIX mesh: <http://id.nlm.nih.gov/mesh/>\nPREFIX lscr: <http://purl.org/lscr#>\nPREFIX lipidmaps: <https://www.lipidmaps.org/rdf/>\nPREFIX keywords: <http://purl.uniprot.org/keywords/>\nPREFIX insdcschema: <http://ddbj.nig.ac.jp/ontologies/nucleotide/>\nPREFIX insdc: <http://identifiers.org/insdc/>\nPREFIX identifiers: <http://identifiers.org/>\nPREFIX glyconnect: <https://purl.org/glyconnect/>\nPREFIX glycan: <http://purl.jp/bio/12/glyco/glycan#>\nPREFIX genex: <http://purl.org/genex#>\nPREFIX foaf: <http://xmlns.com/foaf/0.1/>\nPREFIX faldo: <http://biohackathon.org/resource/faldo#>\nPREFIX eunisSpecies: <http://eunis.eea.europa.eu/rdf/species-schema.rdf#>\nPREFIX ensembltranscript: <http://rdf.ebi.ac.uk/resource/ensembl.transcript/>\nPREFIX ensemblterms: <http://rdf.ebi.ac.uk/terms/ensembl/>\nPREFIX ensemblprotein: <http://rdf.ebi.ac.uk/resource/ensembl.protein/>\nPREFIX ensemblexon: <http://rdf.ebi.ac.uk/resource/ensembl.exon/>\nPREFIX ensembl: <http://rdf.ebi.ac.uk/resource/ensembl/>\nPREFIX ec: <http://purl.uniprot.org/enzyme/>\nPREFIX dcterms: <http://purl.org/dc/terms/>\nPREFIX dc: <http://purl.org/dc/terms/>\nPREFIX chebislash: <http://purl.obolibrary.org/obo/chebi/>\nPREFIX chebihash: <http://purl.obolibrary.org/obo/chebi#>\nPREFIX cco: <http://rdf.ebi.ac.uk/terms/chembl#>\nPREFIX busco: <http://busco.ezlab.org/schema#>\nPREFIX bibo: <http://purl.org/ontology/bibo/>\nPREFIX allie: <http://allie.dbcls.jp/>\nPREFIX SWISSLIPID: <https://swisslipids.org/rdf/SLM_>\nPREFIX GO: <http://purl.obolibrary.org/obo/GO_>\nPREFIX ECO: <http://purl.obolibrary.org/obo/ECO_>\nPREFIX CHEBI: <http://purl.obolibrary.org/obo/CHEBI_>\n\n\n    SELECT \n    ?annotation ?comment\nWHERE {\n    ?annotation a up:Natural_Variant_Annotation ;\n        rdfs:comment ?comment . \n} \nORDER BY DESC(STRLEN(?comment))\n\n\n    LIMIT 20",
+   "is_orig_used": false,
+   "res": {
+      "head": {
+         "vars": [
+            "annotation",
+            "comment"
+         ]
+      },
+      "results": {
+         "bindings": [
+            {
+               "annotation": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/uniprot/P18894#SIP4C0B97BE5E95899F"
+               },
+               "comment": {
+                  "type": "literal",
+                  "value": "Abolishes activity; mutant mice exhibit heightened anxiety, the effect is particularly pronounced in female mice; performance in the Morris water maze is improved; responses to nociceptive stimuli are altered; hypoactive; leads to motorneuron degeneration; aged animals exhibit muscle atrophy; leads to increased susceptibility to S.aureus challenge in a renal infection model; resistance to the effects of the psychoactive drug phencyclidine (PCP); resistance to the effects of the NMDA glycine-site antagonist L-701,324; excitatory postsynaptic currents are altered; long-term potentiation in the CA1 area of hippocampus is increased; leads to the accumulation of D-amino acids in the cerebrum, cerebellum, whole cortex, medulla oblongata, hippocampus, hypothalamus, lumbar spinal cord, pituitary gland, kidney, blood, serum, urine and also mucosa and epithelium of the small intestine, including D-serine, D-alanine, D-proline, D-methionine and D-leucine but not D-aspartate; alters the level of L-glutamine and L-glutamate in the cerebellum and serum; increases colonization by V.cholerae and Lactobacillales of the small intestine; decreases colonization by Bacteroidales of the small intestine; increases the level of secretory immunoglobulin A in the feces and small intestine; normal life span; normal gross morphology; normal fertility; normal blood glucose level; fecal levels of D-amino acids are unchanged; normal D-serine uptake in cerebellar synaptosomes; the expression of the NMDA receptor component Grin1, amino acid transporter Slc7a10, glycine transporter Slc6a9, or serine racemase Srr is unaltered."
+               }
+            },
+            {
+               "annotation": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/annotation/VAR_033437"
+               },
+               "comment": {
+                  "type": "literal",
+                  "value": "In allele DPB1*01:02, allele DPB1*02:01, allele DPB1*02:02, allele DPB1*02:03, allele DPB1*03:01, allele DPB1*04:02, allele DPB1*04:03, allele DPB1*05:01, allele DPB1*05:02, allele DPB1*06:01, allele DPB1*06:02, allele DPB1*08:01, allele DPB1*08:02, allele DPB1*09:01, allele DPB1*10:01, allele DPB1*10:02, allele DPB1*11:02, allele DPB1*14:01, allele DPB1*14:02, allele DPB1*15:02, allele DPB1*16:01, allele DPB1*16:02, allele DPB1*17:01, allele DPB1*17:02, allele DPB1*18:01, allele DPB1*18:02, allele DPB1*19:01, allele DPB1*19:02, allele DPB1*21:01, allele DPB1*20:01, allele DPB1*22:01, allele DPB1*22:02, allele DPB1*23:01, allele DPB1*25:01, allele DPB1*26:02, allele DPB1*29:01, allele DPB1*30:01, allele DPB1*32:01, allele DPB1*34:01, allele DPB1*35:01, allele DPB1*36:01, allele DPB1*37:01, allele DPB1*38:01, allele DPB1*41:01, allele DPB1*44:01, allele DPB1*45:01, allele DPB1*46:01, allele DPB1*47:01, allele DPB1*48:01, allele DPB1*50:01, allele DPB1*52:01, allele DPB1*54:01, allele DPB1*55:01, allele DPB1*57:01, allele DPB1*58:01, allele DPB1*59:01, allele DPB1*60:01, allele DPB1*62:01, allele DPB1*63:01, allele DPB1*67:01, allele DPB1*68:01, allele DPB1*69:01, allele DPB1*70:01, allele DPB1*71:01, allele DPB1*73:01, allele DPB1*75:01, allele DPB1*77:01, allele DPB1*78:01, allele DPB1*79:01, allele DPB1*80:01, allele DPB1*82:01, allele DPB1*83:01, allele DPB1*84:01, allele DPB1*86:01, allele DPB1*87:01, allele DPB1*88:01, allele DPB1*91:01, allele DPB1*93:01, allele DPB1*94:01, allele DPB1*95:01, allele DPB1*97:01 and allele DPB1*98:01."
+               }
+            },
+            {
+               "annotation": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/uniprot/P28286#SIP32EA0743F9740C44"
+               },
+               "comment": {
+                  "type": "literal",
+                  "value": "In strain: CA-001, CA-002, CA-003, CA-008, CA-009, CA-010, CA-011, CA-012, CA-015, CA-017, CA-018, CA-023, CA-026, CA-027, CA-030, CA-034, CA-035, CA-037, CA-040, CA-041, CA-043, CA-044, CA-046, CA-047, CA-048, CA-052, CA-055, CA-056, CA-057, CA-058, CA-060, CA-061, CA-062, CA-063, CA-064, CA-065, CA-066, CA-068, CA-069, CA-070, CA-072, CA-075, CA-081, CA-086, CA-087, CA-088, CA-090, CA-091, CA-093, CA-095, CA-105, CA-113, CA-114, CA-120, CA-126, CA-128, CA-129, CA-130, CA-132, CA-133, CA-136, CA-137, CA-140, CA-142, CA-144, CA-145, CA-147, Oregon-R, NC-001, NC-002, NC-003, NC-004, NC-005, NC-006, NC-008, NC-010, NC-011, NC-012, NC-014, NC-015, NC-017, NC-021, NC-022, NC-023, NC-025, NC-026, NC-027, NC-028, NC-029, NC-030, NC-032, NC-033, NC-034, NC-036, NC-040, NC-041, NC-042, NC-043, NC-044, NC-046, NC-047, NC-048, NC-049, NC-051, NC-052, NC-053, NC-054, NC-057, NC-058, NC-059, NC-060, NC-062, NC-064, NC-066, NC-067, NC-068, NC-069, NC-071, NC-072, NC-073, NC-074, NC-075, NC-077, NC-079, NC-080, NC-081, NC-084, NC-086, NC-087, NC-089, NC-091, NC-092, NC-094, NC-095, NC-096, NC-097, NC-098, NC-100, NC-101, NC-103, NC-104, NC-105, NC-107, NC-108, NC-110, NC-112, NC-113, NC-114, NC-115, NC-116, NC-118, NC-119, NC-121, NC-123, NC-124, NC-126, NC-127, NC-128, NC-129, NC-131, NC-134, NC-135, NC-136, NC-137, NC-138, NC-139, NC-141, NC-142, NC-144, NC-146, NC-147, NC-149 and NC-148."
+               }
+            },
+            {
+               "annotation": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/annotation/VAR_060657"
+               },
+               "comment": {
+                  "type": "literal",
+                  "value": "In allele DPB1*01:01, allele DPB1*03:01, allele DPB1*03:02, allele DPB1*04:03, allele DPB1*05:01, allele DPB1*05:02, allele DPB1*06:01, allele DPB1*08:01, allele DPB1*08:02, allele DPB1*09:01, allele DPB1*09:02, allele DPB1*10:01, allele DPB1*11:01, allele DPB1*11:01, allele DPB1*13:01, allele DPB1*13:02, allele DPB1*13:02, allele DPB1*14:01, allele DPB1*14:02, allele DPB1*16:01, allele DPB1*17:01, allele DPB1*17:02, allele DPB1*19:01, allele DPB1*21:01, allele DPB1*21:01, allele DPB1*21:02, allele DPB1*21:02, allele DPB1*20:01, allele DPB1*22:01, allele DPB1*25:01, allele DPB1*25:02, allele DPB1*26:01, allele DPB1*27:01, allele DPB1*29:01, allele DPB1*30:01, allele DPB1*31:01, allele DPB1*35:01, allele DPB1*36:01, allele DPB1*37:01, allele DPB1*38:01, allele DPB1*44:01, allele DPB1*45:01, allele DPB1*50:01, allele DPB1*52:01, allele DPB1*54:01, allele DPB1*55:01, allele DPB1*56:01, allele DPB1*57:01, allele DPB1*58:01, allele DPB1*63:01, allele DPB1*65:01, allele DPB1*67:01, allele DPB1*68:01, allele DPB1*69:01, allele DPB1*70:01, allele DPB1*76:01, allele DPB1*78:01, allele DPB1*79:01, allele DPB1*84:01, allele DPB1*85:01, allele DPB1*87:01, allele DPB1*88:01, allele DPB1*89:01, allele DPB1*90:01, allele DPB1*91:01, allele DPB1*92:01, allele DPB1*93:01, allele DPB1*97:01 and allele DPB1*98:01."
+               }
+            },
+            {
+               "annotation": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/uniprot/Q9W497#SIP6AB71D6E9DF952BE"
+               },
+               "comment": {
+                  "type": "literal",
+                  "value": "In strain: AK07, AK10, AK13, KY02-C351, KY02-C439, KY02-C510, KY02-C301, KY02-C302, KY02-C303, KY02-C304, KY02-C308, KY02-C310, KY02-C311, KY02-C315, KY02-C316, KY02-C319, KY02-C320, KY02-C325, KY02-C326, KY02-C330, KY02-C331, KY02-C332, KY02-C335, KY02-C336, KY02-C341, KY02-C342, KY02-C346, KY02-C347, KY02-C348, KY02-C349, KY02-C350, KY02-C352, KY02-C355, KY02-C356, KY02-C358, KY02-C359, KY02-C361, KY02-C362, KY02-C367, KY02-C372, KY02-C373, KY02-C374, KY02-C376, KY02-C378, KY02-C380, KY02-C382, KY02-C383, KY02-C384, KY02-C387, KY02-C388, KY02-C390, KY02-C392, KY02-C393, KY02-C394, KY02-C400, KY02-C402, KY02-C404, KY02-C407, KY02-C411, KY02-C412, KY02-C413, KY02-C417, KY02-C419, KY02-C421, KY02-C426, KY02-C428, KY02-C432, KY02-C433, KY02-C434, KY02-C435, KY02-C441, KY02-C443, KY02-C446, KY02-C449, KY02-C451, KY02-C453, KY02-C454, KY02-C456, KY02-C457, KY02-C460, KY02-C462, KY02-C463, KY02-C467, KY02-C469, KY02-C470, KY02-C477, KY02-C478, KY02-C480, KY02-C483, KY02-C484, KY02-C485, KY02-C486, KY02-C488, KY02-C489, KY02-C490, KY02-C492, KY02-C493, KY02-C494, KY02-C496, KY02-C497, KY02-C500, KY02-C504, KY02-C511, KY02-C513, KY02-C514, KY02-C515, KY02-C516, KY02-C517, KY02-C519, KY02-C520, Oregon-R, Singapore, Tananarive and w cv; decreased sensitivity to trehalose."
+               }
+            },
+            {
+               "annotation": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/annotation/VAR_062703"
+               },
+               "comment": {
+                  "type": "literal",
+                  "value": "In allele DQB1*02:01, allele DQB1*02:02, allele DQB1*02:03, allele DQB1*02:04, allele DQB1*02:05, allele DQB1*03:02, allele DQB1*03:03, allele DQB1*03:05, allele DQB1*03:06, allele DQB1*03:07, allele DQB1*03:08, allele DQB1*03:10, allele DQB1*03:11, allele DQB1*03:12, allele DQB1*03:14, allele DQB1*03:15, allele DQB1*03:17, allele DQB1*03:18, allele DQB1*03:20, allele DQB1*03:23, allele DQB1*03:25, allele DQB1*03:26, allele DQB1*04:01, allele DQB1*04:02, allele DQB1*04:03, allele DQB1*05:01, allele DQB1*05:02, allele DQB1*05:03, allele DQB1*05:04, allele DQB1*05:05, allele DQB1*06:01, allele DQB1*06:02, allele DQB1*06:03, allele DQB1*06:04, allele DQB1*06:05, allele DQB1*06:06, allele DQB1*06:07, allele DQB1*06:08, allele DQB1*06:09, allele DQB1*06:10, allele DQB1*06:11, allele DQB1*06:12, allele DQB1*06:13, allele DQB1*06:14, allele DQB1*06:15, allele DQB1*06:16, allele DQB1*06:17, allele DQB1*06:18, allele DQB1*06:19, allele DQB1*06:20, allele DQB1*06:21, allele DQB1*06:22, allele DQB1*06:23, allele DQB1*06:24, allele DQB1*06:25, allele DQB1*06:27, allele DQB1*06:28, allele DQB1*06:29, allele DQB1*06:30, allele DQB1*06:31, allele DQB1*06:32, allele DQB1*06:33, allele DQB1*06:34, allele DQB1*06:36, allele DQB1*06:37, allele DQB1*06:38 and allele DQB1*06:39."
+               }
+            },
+            {
+               "annotation": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/annotation/VAR_033444"
+               },
+               "comment": {
+                  "type": "literal",
+                  "value": "In allele DPB1*01:01, allele DPB1*03:01, allele DPB1*03:02, allele DPB1*04:03, allele DPB1*05:01, allele DPB1*05:02, allele DPB1*06:01, allele DPB1*08:01, allele DPB1*08:02, allele DPB1*09:01, allele DPB1*09:02, allele DPB1*10:01, allele DPB1*11:01, allele DPB1*13:01, allele DPB1*13:02, allele DPB1*14:01, allele DPB1*14:02, allele DPB1*16:01, allele DPB1*17:01, allele DPB1*17:02, allele DPB1*19:01, allele DPB1*21:01, allele DPB1*21:02, allele DPB1*20:01, allele DPB1*22:01, allele DPB1*22:02, allele DPB1*25:01, allele DPB1*25:02, allele DPB1*26:01, allele DPB1*27:01, allele DPB1*29:01, allele DPB1*30:01, allele DPB1*31:01, allele DPB1*35:01, allele DPB1*36:01, allele DPB1*37:01, allele DPB1*38:01, allele DPB1*44:01, allele DPB1*45:01, allele DPB1*50:01, allele DPB1*52:01, allele DPB1*54:01, allele DPB1*55:01, allele DPB1*56:01, allele DPB1*57:01, allele DPB1*58:01, allele DPB1*63:01, allele DPB1*65:01, allele DPB1*67:01, allele DPB1*68:01, allele DPB1*69:01, allele DPB1*70:01, allele DPB1*76:01, allele DPB1*78:01, allele DPB1*79:01, allele DPB1*84:01, allele DPB1*85:01, allele DPB1*87:01, allele DPB1*88:01, allele DPB1*89:01, allele DPB1*90:01, allele DPB1*91:01, allele DPB1*92:01, allele DPB1*93:01, allele DPB1*97:01 and allele DPB1*98:01."
+               }
+            },
+            {
+               "annotation": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/annotation/VAR_033445"
+               },
+               "comment": {
+                  "type": "literal",
+                  "value": "In allele DPB1*01:01, allele DPB1*03:01, allele DPB1*03:02, allele DPB1*04:03, allele DPB1*05:01, allele DPB1*05:02, allele DPB1*06:01, allele DPB1*08:01, allele DPB1*08:02, allele DPB1*09:01, allele DPB1*09:02, allele DPB1*10:01, allele DPB1*11:01, allele DPB1*13:01, allele DPB1*13:02, allele DPB1*14:01, allele DPB1*14:02, allele DPB1*16:01, allele DPB1*17:01, allele DPB1*17:02, allele DPB1*19:01, allele DPB1*21:01, allele DPB1*21:02, allele DPB1*20:01, allele DPB1*22:01, allele DPB1*22:02, allele DPB1*25:01, allele DPB1*25:02, allele DPB1*26:01, allele DPB1*27:01, allele DPB1*29:01, allele DPB1*30:01, allele DPB1*31:01, allele DPB1*35:01, allele DPB1*36:01, allele DPB1*37:01, allele DPB1*38:01, allele DPB1*44:01, allele DPB1*45:01, allele DPB1*50:01, allele DPB1*52:01, allele DPB1*54:01, allele DPB1*55:01, allele DPB1*56:01, allele DPB1*57:01, allele DPB1*58:01, allele DPB1*63:01, allele DPB1*65:01, allele DPB1*67:01, allele DPB1*68:01, allele DPB1*69:01, allele DPB1*70:01, allele DPB1*76:01, allele DPB1*78:01, allele DPB1*79:01, allele DPB1*84:01, allele DPB1*85:01, allele DPB1*87:01, allele DPB1*88:01, allele DPB1*89:01, allele DPB1*90:01, allele DPB1*91:01, allele DPB1*92:01, allele DPB1*93:01, allele DPB1*97:01 and allele DPB1*98:01."
+               }
+            },
+            {
+               "annotation": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/annotation/VAR_004611"
+               },
+               "comment": {
+                  "type": "literal",
+                  "value": "In allele NAT2*4, allele NAT2*5A, allele NAT2*5D, allele NAT2*5E, allele NAT2*5K, allele NAT2*6A, allele NAT2*6B, allele NAT2*6D, allele NAT2*6J, allele NAT2*6K, allele NAT2*6L, allele NAT2*7A, allele NAT2*7B, allele NAT2*13A, allele NAT2*14A, allele NAT2*14B, allele NAT2*14D, allele NAT2*17, allele NAT2*18 and allele NAT2*19; no effect on arylamine N-acetyltransferase activity; decreased arylamine N-acetyltransferase activity when associated in cis with W-64; decreased N-hydroxyarylamine O-acetyltransferase when associated in cis with W-64; 5 to 6-fold lower Vmax and decreased arylamine N-acetyltransferase activity when associated in cis with Q-64; decreased arylamine N-acetyltransferase activity when associated in cis with T-114; loss of arylamine N-acetyltransferase activity when associated in cis with N-122; severely decreased arylamine N-acetyltransferase activity when associated in cis with F-137; decreased arylamine N-acetyltransferase activity when associated in cis with Q-197; loss of arylamine N-acetyltransferase activity when associated in cis with P-145; no effect on arylamine N-acetyltransferase activity when associated in cis with T-282; no effect on arylamine N-acetyltransferase activity when associated in cis with E-286."
+               }
+            },
+            {
+               "annotation": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/annotation/VAR_033446"
+               },
+               "comment": {
+                  "type": "literal",
+                  "value": "In allele DPB1*01:01, allele DPB1*03:01, allele DPB1*03:02, allele DPB1*04:03, allele DPB1*05:01, allele DPB1*05:02, allele DPB1*06:01, allele DPB1*08:01, allele DPB1*08:02, allele DPB1*09:01, allele DPB1*09:02, allele DPB1*10:01, allele DPB1*11:01, allele DPB1*13:01, allele DPB1*13:02, allele DPB1*14:01, allele DPB1*14:02, allele DPB1*16:01, allele DPB1*17:01, allele DPB1*17:02, allele DPB1*19:01, allele DPB1*21:01, allele DPB1*21:02, allele DPB1*20:01, allele DPB1*22:01, allele DPB1*22:02, allele DPB1*25:01, allele DPB1*25:02, allele DPB1*26:01, allele DPB1*27:01, allele DPB1*29:01, allele DPB1*30:01, allele DPB1*31:01, allele DPB1*35:01, allele DPB1*36:01, allele DPB1*37:01, allele DPB1*38:01, allele DPB1*44:01, allele DPB1*45:01, allele DPB1*50:01, allele DPB1*52:01, allele DPB1*54:01, allele DPB1*55:01, allele DPB1*56:01, allele DPB1*58:01, allele DPB1*63:01, allele DPB1*65:01, allele DPB1*67:01, allele DPB1*68:01, allele DPB1*69:01, allele DPB1*70:01, allele DPB1*76:01, allele DPB1*78:01, allele DPB1*79:01, allele DPB1*84:01, allele DPB1*85:01, allele DPB1*87:01, allele DPB1*88:01, allele DPB1*89:01, allele DPB1*90:01, allele DPB1*91:01, allele DPB1*92:01, allele DPB1*93:01, allele DPB1*97:01 and allele DPB1*98:01."
+               }
+            },
+            {
+               "annotation": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/annotation/VAR_033438"
+               },
+               "comment": {
+                  "type": "literal",
+                  "value": "In allele DPB1*02:01, allele DPB1*03:01, allele DPB1*04:02, allele DPB1*05:02, allele DPB1*06:01, allele DPB1*06:02, allele DPB1*08:01, allele DPB1*09:01, allele DPB1*10:01, allele DPB1*10:02, allele DPB1*11:02, allele DPB1*14:01, allele DPB1*14:02, allele DPB1*16:01, allele DPB1*16:02, allele DPB1*17:01, allele DPB1*18:01, allele DPB1*18:02, allele DPB1*19:02, allele DPB1*20:01, allele DPB1*22:02, allele DPB1*25:01, allele DPB1*25:02, allele DPB1*26:02, allele DPB1*28:01, allele DPB1*29:01, allele DPB1*32:01, allele DPB1*35:01, allele DPB1*37:01, allele DPB1*41:01, allele DPB1*44:01, allele DPB1*45:01, allele DPB1*46:01, allele DPB1*48:01, allele DPB1*49:01, allele DPB1*50:01, allele DPB1*51:01, allele DPB1*53:01, allele DPB1*57:01, allele DPB1*59:01, allele DPB1*60:01, allele DPB1*68:01, allele DPB1*69:01, allele DPB1*70:01, allele DPB1*73:01, allele DPB1*75:01, allele DPB1*76:01, allele DPB1*77:01, allele DPB1*78:01, allele DPB1*79:01, allele DPB1*80:01, allele DPB1*81:01, allele DPB1*82:01, allele DPB1*83:01, allele DPB1*84:01, allele DPB1*86:01, allele DPB1*88:01, allele DPB1*91:01, allele DPB1*92:01, allele DPB1*93:01, allele DPB1*94:01 and allele DPB1*98:01."
+               }
+            },
+            {
+               "annotation": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/annotation/VAR_054662"
+               },
+               "comment": {
+                  "type": "literal",
+                  "value": "In allele DPB1*02:01, allele DPB1*03:01, allele DPB1*04:02, allele DPB1*05:02, allele DPB1*06:01, allele DPB1*06:02, allele DPB1*08:01, allele DPB1*09:01, allele DPB1*10:01, allele DPB1*10:02, allele DPB1*11:02, allele DPB1*14:01, allele DPB1*14:02, allele DPB1*16:01, allele DPB1*16:02, allele DPB1*17:01, allele DPB1*18:01, allele DPB1*18:01, allele DPB1*18:02, allele DPB1*19:02, allele DPB1*20:01, allele DPB1*22:02, allele DPB1*25:01, allele DPB1*25:02, allele DPB1*26:02, allele DPB1*28:01, allele DPB1*29:01, allele DPB1*32:01, allele DPB1*35:01, allele DPB1*37:01, allele DPB1*41:01, allele DPB1*44:01, allele DPB1*45:01, allele DPB1*46:01, allele DPB1*48:01, allele DPB1*49:01, allele DPB1*50:01, allele DPB1*51:01, allele DPB1*53:01, allele DPB1*57:01, allele DPB1*59:01, allele DPB1*60:01, allele DPB1*68:01, allele DPB1*69:01, allele DPB1*70:01, allele DPB1*73:01, allele DPB1*75:01, allele DPB1*76:01, allele DPB1*77:01, allele DPB1*78:01, allele DPB1*79:01, allele DPB1*80:01, allele DPB1*81:01, allele DPB1*82:01, allele DPB1*83:01, allele DPB1*86:01, allele DPB1*88:01, allele DPB1*91:01, allele DPB1*92:01, allele DPB1*93:01, allele DPB1*94:01 and allele DPB1*98:01."
+               }
+            },
+            {
+               "annotation": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/annotation/VAR_061472"
+               },
+               "comment": {
+                  "type": "literal",
+                  "value": "In allele DQB1*02:01, allele DQB1*02:02, allele DQB1*02:03, allele DQB1*02:04, allele DQB1*02:05, allele DQB1*03:02, allele DQB1*03:03, allele DQB1*03:05, allele DQB1*03:06, allele DQB1*03:07, allele DQB1*03:08, allele DQB1*03:11, allele DQB1*03:15, allele DQB1*03:17, allele DQB1*03:18, allele DQB1*03:20, allele DQB1*03:23, allele DQB1*03:25, allele DQB1*03:26, allele DQB1*04:01, allele DQB1*04:02, allele DQB1*04:03, allele DQB1*05:01, allele DQB1*05:02, allele DQB1*05:03, allele DQB1*05:04, allele DQB1*05:05, allele DQB1*06:02, allele DQB1*06:03, allele DQB1*06:04, allele DQB1*06:05, allele DQB1*06:07, allele DQB1*06:08, allele DQB1*06:09, allele DQB1*06:10, allele DQB1*06:11, allele DQB1*06:12, allele DQB1*06:13, allele DQB1*06:14, allele DQB1*06:15, allele DQB1*06:16, allele DQB1*06:17, allele DQB1*06:18, allele DQB1*06:19, allele DQB1*06:20, allele DQB1*06:21, allele DQB1*06:22, allele DQB1*06:23, allele DQB1*06:24, allele DQB1*06:25, allele DQB1*06:27, allele DQB1*06:28, allele DQB1*06:29, allele DQB1*06:30, allele DQB1*06:31, allele DQB1*06:32, allele DQB1*06:33, allele DQB1*06:34, allele DQB1*06:36, allele DQB1*06:37, allele DQB1*06:38 and allele DQB1*06:39."
+               }
+            },
+            {
+               "annotation": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/uniprot/Q9W497#SIP3E462B01C3642A78"
+               },
+               "comment": {
+                  "type": "literal",
+                  "value": "In strain: KY02-C301, KY02-C302, KY02-C308, KY02-C309, KY02-C310, KY02-C311, KY02-C314, KY02-C315, KY02-C319, KY02-C320, KY02-C325, KY02-C327, KY02-C330, KY02-C332, KY02-C335, KY02-C337, KY02-C342, KY02-C343, KY02-C344, KY02-C346, KY02-C347, KY02-C349, KY02-C351, KY02-C352, KY02-C353, KY02-C355, KY02-C358, KY02-C361, KY02-C367, KY02-C368, KY02-C372, KY02-C374, KY02-C376, KY02-C377, KY02-C378, KY02-C379, KY02-C380, KY02-C381, KY02-C382, KY02-C383, KY02-C384, KY02-C388, KY02-C389, KY02-C390, KY02-C393, KY02-C396, KY02-C400, KY02-C402, KY02-C404, KY02-C411, KY02-C412, KY02-C413, KY02-C414, KY02-C420, KY02-C425, KY02-C426, KY02-C429, KY02-C432, KY02-C433, KY02-C434, KY02-C435, KY02-C436, KY02-C439, KY02-C441, KY02-C446, KY02-C447, KY02-C449, KY02-C451, KY02-C453, KY02-C457, KY02-C460, KY02-C462, KY02-C463, KY02-C467, KY02-C469, KY02-C476, KY02-C477, KY02-C480, KY02-C483, KY02-C484, KY02-C485, KY02-C486, KY02-C488, KY02-C490, KY02-C491, KY02-C492, KY02-C493, KY02-C494, KY02-C496, KY02-C497, KY02-C500, KY02-C504, KY02-C508, KY02-C510, KY02-C511, KY02-C514, KY02-C515, KY02-C516, KY02-C517, KY02-C519, KY02-C520 and Singapore."
+               }
+            },
+            {
+               "annotation": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/annotation/VAR_060633"
+               },
+               "comment": {
+                  "type": "literal",
+                  "value": "In allele DPB1*01:01, allele DPB1*03:01, allele DPB1*05:02, allele DPB1*06:01, allele DPB1*09:01, allele DPB1*09:02, allele DPB1*10:01, allele DPB1*11:01, allele DPB1*11:02, allele DPB1*13:01, allele DPB1*13:02, allele DPB1*14:01, allele DPB1*14:02, allele DPB1*15:01, allele DPB1*16:02, allele DPB1*17:01, allele DPB1*17:02, allele DPB1*18:01, allele DPB1*20:02, allele DPB1*21:01, allele DPB1*21:02, allele DPB1*20:01, allele DPB1*22:02, allele DPB1*25:01, allele DPB1*25:02, allele DPB1*26:01, allele DPB1*27:01, allele DPB1*29:01, allele DPB1*30:01, allele DPB1*35:01, allele DPB1*36:01, allele DPB1*37:01, allele DPB1*44:01, allele DPB1*45:01, allele DPB1*50:01, allele DPB1*52:01, allele DPB1*54:01, allele DPB1*55:01, allele DPB1*56:01, allele DPB1*58:01, allele DPB1*66:01, allele DPB1*67:01, allele DPB1*69:01, allele DPB1*70:01, allele DPB1*74:01, allele DPB1*76:01, allele DPB1*78:01, allele DPB1*79:01, allele DPB1*85:01, allele DPB1*86:01, allele DPB1*87:01, allele DPB1*88:01, allele DPB1*89:01, allele DPB1*90:01, allele DPB1*91:01, allele DPB1*92:01, allele DPB1*93:01 and allele DPB1*98:01."
+               }
+            },
+            {
+               "annotation": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/uniprot/P28285#SIP7862A212DB78122E"
+               },
+               "comment": {
+                  "type": "literal",
+                  "value": "In strain: CA-002, CA-003, CA-008, CA-011, CA-012, CA-015, CA-023, CA-027, CA-030, CA-031, CA-034, CA-035, CA-037, CA-043, CA-044, CA-045, CA-046, CA-048, CA-052, CA-055, CA-057, CA-058, CA-063, CA-064, CA-065, CA-066, CA-068, CA-070, CA-072, CA-073, CA-075, CA-081, CA-083, CA-087, CA-088, CA-089, CA-091, CA-096, CA-100, CA-105, CA-114, CA-120, CA-123, CA-128, CA-129, CA-133, CA-140, CA-145, CA-147, CA-148, NC-001, NC-002, NC-003, NC-010, NC-011, NC-012, NC-013, NC-015, NC-023, NC-024, NC-025, NC-027, NC-028, NC-029, NC-030, NC-032, NC-033, NC-034, NC-036, NC-040, NC-041, NC-042, NC-043, NC-044, NC-046, NC-047, NC-048, NC-050, NC-051, NC-052, NC-054, NC-057, NC-059, NC-060, NC-061, NC-066, NC-069, NC-071, NC-072, NC-074, NC-075, NC-077, NC-079, NC-080, NC-081, NC-084, NC-086, NC-087, NC-088, NC-089, NC-091, NC-092, NC-094, NC-098, NC-101, NC-103, NC-104, NC-107, NC-109, NC-110, NC-111, NC-112, NC-113, NC-114, NC-115, NC-116, NC-119, NC-121, NC-124, NC-127, NC-128, NC-129, NC-131, NC-133, NC-134, NC-135, NC-136, NC-137, NC-138, NC-144, NC-146, NC-147, NC-148 and NC-149."
+               }
+            },
+            {
+               "annotation": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/annotation/VAR_062694"
+               },
+               "comment": {
+                  "type": "literal",
+                  "value": "In allele DQB1*02:01, allele DQB1*02:02, allele DQB1*02:03, allele DQB1*02:04, allele DQB1*02:05, allele DQB1*03:02, allele DQB1*03:03, allele DQB1*03:06, allele DQB1*03:07, allele DQB1*03:08, allele DQB1*03:11, allele DQB1*03:12, allele DQB1*03:15, allele DQB1*03:18, allele DQB1*03:20, allele DQB1*03:23, allele DQB1*03:25, allele DQB1*03:26, allele DQB1*04:03, allele DQB1*06:02, allele DQB1*06:03, allele DQB1*06:04, allele DQB1*06:05, allele DQB1*06:06, allele DQB1*06:07, allele DQB1*06:08, allele DQB1*06:09, allele DQB1*06:10, allele DQB1*06:11, allele DQB1*06:12, allele DQB1*06:13, allele DQB1*06:14, allele DQB1*06:15, allele DQB1*06:16, allele DQB1*06:17, allele DQB1*06:18, allele DQB1*06:19, allele DQB1*06:20, allele DQB1*06:21, allele DQB1*06:22, allele DQB1*06:24, allele DQB1*06:25, allele DQB1*06:27, allele DQB1*06:28, allele DQB1*06:29, allele DQB1*06:30, allele DQB1*06:31, allele DQB1*06:32, allele DQB1*06:33, allele DQB1*06:34, allele DQB1*06:36, allele DQB1*06:37, allele DQB1*06:38 and allele DQB1*06:39; requires 2 nucleotide substitutions."
+               }
+            },
+            {
+               "annotation": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/uniprot/Q0GRC4#SIPD549740E81B8E7C6"
+               },
+               "comment": {
+                  "type": "literal",
+                  "value": "In strain: PI 269818, alleles resistant-2, sbm1, eIF4E(R) and A-6. In strain: JI 2009, alleles SBM1 and susceptible. In strain: Dark skinned Perfection. In strain: Brutus. In strain: JI 2643, Fjord, JI 261, JI 194, JI 205, JI 1109, JI 267, PI 505122, PI 639981, JI 1104, JI 1108, ATC-6927, ATC-7173, JI 1758, JI 1030, JI 190, PI 357290, JI 193, JI 2607, JI 2571, JI 1107, JI 1085, JI 2065, JI 1121, JI 1756, JI 182 and JI 3157, alleles S-1, eIF4E(S) and C-1. In strain: VIR 1589, allele C-2. In strain: JI 2630, allele S-1. In strain: JI 1632, allele S-4. In strain: JI 1091 and JI 3001, allele S-1. In strain: JI 1010, allele S-6. In strain: JI 1007, allele S-5. In strain: JI 2646, allele S-7. In strain: JI 1845, allele S-1. In strain: PI 347328, allele S-2. In strain: PI 347422, ATC-6931 and PI 347484, allele S-3. In strain: PI 269774, allele A-7. In strain: CGN-3302, allele A-1. In strain: JI 1194, CGN-3311, ATC-7140, ATC-3275, ATC-7134, IPK-477 and CGN-3319, allele B-1. In strain: JI 1090, allele B-3. In strain: JI 1370, allele B-2."
+               }
+            },
+            {
+               "annotation": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/uniprot/Q0GRC4#SIP790BCECBFA687A2E"
+               },
+               "comment": {
+                  "type": "literal",
+                  "value": "In strain: PI 269818, alleles resistant-2, sbm1, eIF4E(R) and A-6. In strain: JI 2009, alleles susceptible and SBM1. In strain: Bonneville. In strain: Brutus. In strain: JI 2643, Fjord, JI 261, JI 194, JI 205, JI 1109, JI 267, PI 505122, PI 639981, JI 1104, JI 1108, ATC-6927, ATC-7173, JI 1758, JI 1030, JI 190, PI 357290, JI 193, JI 2607, JI 2571, JI 1107, JI 1085, JI 2065, JI 1121, JI 1756, JI 182 and JI 3157, alleles S-1, eIF4E(S) and C-1. In strain: VIR 1589, allele C-2. In strain: JI 2630, allele S-1. In strain: JI 1632, allele S-4. In strain: JI 1091 and JI 3001, allele S-1. In strain: JI 1010, allele S-6. In strain: JI 1007, allele S-5. In strain: JI 2646, allele S-7. In strain: JI 1845, allele S-1. In strain: PI 347328, allele S-2. In strain: PI 347422, ATC-6931 and PI 347484, allele S-3. In strain: PI 269774, allele A-7. In strain: JI 1194, CGN-3311, ATC-7140, ATC-3275, ATC-7134, IPK-477 and CGN-3319, allele B-1. In strain: JI 1090, allele B-3. In strain: JI 1370, allele B-2."
+               }
+            },
+            {
+               "annotation": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/uniprot/P28285#SIP45DB5BB9D9764851"
+               },
+               "comment": {
+                  "type": "literal",
+                  "value": "In strain: CA-002, CA-009, CA-010, CA-011, CA-017, CA-018, CA-023, CA-030, CA-031, CA-037, CA-040, CA-041, CA-044, CA-045, CA-047, CA-048, CA-052, CA-056, CA-057, CA-062, CA-068, CA-070, CA-075, CA-086, CA-087, CA-088, CA-089, CA-091, CA-095, CA-096, CA-100, CA-113, CA-114, CA-115, CA-118, CA-120, CA-126, CA-127, CA-129, CA-132, CA-133, CA-136, CA-140, CA-142, CA-145, CA-147, NC-001, NC-003, NC-004, NC-005, NC-011, NC-015, NC-017, NC-021, NC-022, NC-025, NC-033, NC-034, NC-036, NC-037, NC-038, NC-039, NC-040, NC-042, NC-044, NC-046, NC-048, NC-049, NC-051, NC-052, NC-053, NC-054, NC-057, NC-059, NC-068, NC-069, NC-070, NC-071, NC-079, NC-080, NC-084, NC-086, NC-087, NC-088, NC-089, NC-091, NC-092, NC-094, NC-095, NC-100, NC-101, NC-104, NC-105, NC-107, NC-109, NC-110, NC-111, NC-112, NC-113, NC-114, NC-115, NC-116, NC-119, NC-121, NC-123, NC-125, NC-126, NC-128, NC-129, NC-133, NC-134, NC-135, NC-136, NC-137, NC-138, NC-139, NC-142, NC-144, NC-146, NC-147, NC-148, NC-149 and NC-150."
+               }
+            }
+         ]
+      }
+   },
+   "error_msg": "",
+   "error_type": "",
+   "attempt": 1
+}

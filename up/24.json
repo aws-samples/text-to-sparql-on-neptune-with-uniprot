@@ -1,0 +1,329 @@
+{
+   "question": "Find all names associated with uniprot entry P05067, and if the name is associated with the entry it's domains or its components",
+   "expected_sparql": "SELECT\n  ?protein\n  ?anyKindOfName \n  ?names \n  ?partType\nWHERE\n{\n  BIND(<http://purl.uniprot.org/uniprot/P05067> AS ?protein)\n  ?protein a up:Protein .\n  {\n    ?protein (up:recommendedName|up:alternativeName) ?structuredName .\n  }\n    UNION\n  {\n    VALUES(?partType){(up:domain) (up:component)}\n    ?protein ?partType ?part .\n    ?part (up:recommendedName|up:alternativeName) ?structuredName .\n  }\n  ?structuredName ?anyKindOfName  ?names .\n  ?anyKindOfName rdfs:subPropertyOf up:structuredNameType .\n}\n",
+   "initial_sparql": null,
+   "improved_sparql": null,
+   "actual_sparql": "PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>\nPREFIX wikibase: <http://wikiba.se/ontology#>\nPREFIX wdt: <http://www.wikidata.org/prop/direct/>\nPREFIX wd: <http://www.wikidata.org/entity/>\nPREFIX vg: <http://biohackathon.org/resource/vg#>\nPREFIX up: <http://purl.uniprot.org/core/>\nPREFIX uniprotkb: <http://purl.uniprot.org/uniprot/>\nPREFIX uberon: <http://purl.obolibrary.org/obo/uo#>\nPREFIX taxon: <http://purl.uniprot.org/taxonomy/>\nPREFIX sp: <http://spinrdf.org/sp#>\nPREFIX skos: <http://www.w3.org/2004/02/skos/core#>\nPREFIX sio: <http://semanticscience.org/resource/>\nPREFIX sh: <http://www.w3.org/ns/shacl#>\nPREFIX schema: <http://schema.org/>\nPREFIX sachem: <http://bioinfo.uochb.cas.cz/rdf/v1.0/sachem#>\nPREFIX rh: <http://rdf.rhea-db.org/>\nPREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\nPREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\nPREFIX pubmed: <http://rdf.ncbi.nlm.nih.gov/pubmed/>\nPREFIX ps: <http://www.wikidata.org/prop/statement/>\nPREFIX pq: <http://www.wikidata.org/prop/qualifier/>\nPREFIX patent: <http://data.epo.org/linked-data/def/patent/>\nPREFIX p: <http://www.wikidata.org/prop/>\nPREFIX owl: <http://www.w3.org/2002/07/owl#>\nPREFIX orthodbGroup: <http://purl.orthodb.org/odbgroup/>\nPREFIX orthodb: <http://purl.orthodb.org/>\nPREFIX orth: <http://purl.org/net/orth#>\nPREFIX obo: <http://purl.obolibrary.org/obo/>\nPREFIX np: <http://nextprot.org/rdf#>\nPREFIX nextprot: <http://nextprot.org/rdf/entry/>\nPREFIX mnx: <https://rdf.metanetx.org/schema/>\nPREFIX mnet: <https://rdf.metanetx.org/mnet/>\nPREFIX mesh: <http://id.nlm.nih.gov/mesh/>\nPREFIX lscr: <http://purl.org/lscr#>\nPREFIX lipidmaps: <https://www.lipidmaps.org/rdf/>\nPREFIX keywords: <http://purl.uniprot.org/keywords/>\nPREFIX insdcschema: <http://ddbj.nig.ac.jp/ontologies/nucleotide/>\nPREFIX insdc: <http://identifiers.org/insdc/>\nPREFIX identifiers: <http://identifiers.org/>\nPREFIX glyconnect: <https://purl.org/glyconnect/>\nPREFIX glycan: <http://purl.jp/bio/12/glyco/glycan#>\nPREFIX genex: <http://purl.org/genex#>\nPREFIX foaf: <http://xmlns.com/foaf/0.1/>\nPREFIX faldo: <http://biohackathon.org/resource/faldo#>\nPREFIX eunisSpecies: <http://eunis.eea.europa.eu/rdf/species-schema.rdf#>\nPREFIX ensembltranscript: <http://rdf.ebi.ac.uk/resource/ensembl.transcript/>\nPREFIX ensemblterms: <http://rdf.ebi.ac.uk/terms/ensembl/>\nPREFIX ensemblprotein: <http://rdf.ebi.ac.uk/resource/ensembl.protein/>\nPREFIX ensemblexon: <http://rdf.ebi.ac.uk/resource/ensembl.exon/>\nPREFIX ensembl: <http://rdf.ebi.ac.uk/resource/ensembl/>\nPREFIX ec: <http://purl.uniprot.org/enzyme/>\nPREFIX dcterms: <http://purl.org/dc/terms/>\nPREFIX dc: <http://purl.org/dc/terms/>\nPREFIX chebislash: <http://purl.obolibrary.org/obo/chebi/>\nPREFIX chebihash: <http://purl.obolibrary.org/obo/chebi#>\nPREFIX cco: <http://rdf.ebi.ac.uk/terms/chembl#>\nPREFIX busco: <http://busco.ezlab.org/schema#>\nPREFIX bibo: <http://purl.org/ontology/bibo/>\nPREFIX allie: <http://allie.dbcls.jp/>\nPREFIX SWISSLIPID: <https://swisslipids.org/rdf/SLM_>\nPREFIX GO: <http://purl.obolibrary.org/obo/GO_>\nPREFIX ECO: <http://purl.obolibrary.org/obo/ECO_>\nPREFIX CHEBI: <http://purl.obolibrary.org/obo/CHEBI_>\n\n\n    SELECT\n  ?protein\n  ?anyKindOfName \n  ?names \n  ?partType\nWHERE\n{\n  BIND(<http://purl.uniprot.org/uniprot/P05067> AS ?protein)\n  ?protein a up:Protein .\n  {\n    ?protein (up:recommendedName|up:alternativeName) ?structuredName .\n  }\n    UNION\n  {\n    VALUES(?partType){(up:domain) (up:component)}\n    ?protein ?partType ?part .\n    ?part (up:recommendedName|up:alternativeName) ?structuredName .\n  }\n  ?structuredName ?anyKindOfName  ?names .\n  ?anyKindOfName rdfs:subPropertyOf up:structuredNameType .\n}\n\n\n    LIMIT 20",
+   "is_orig_used": false,
+   "res": {
+      "head": {
+         "vars": [
+            "protein",
+            "anyKindOfName",
+            "names",
+            "partType"
+         ]
+      },
+      "results": {
+         "bindings": [
+            {
+               "names": {
+                  "type": "literal",
+                  "value": "Amyloid-beta precursor protein"
+               },
+               "protein": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/uniprot/P05067"
+               },
+               "anyKindOfName": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/core/fullName"
+               }
+            },
+            {
+               "names": {
+                  "type": "literal",
+                  "value": "Cerebral vascular amyloid peptide"
+               },
+               "protein": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/uniprot/P05067"
+               },
+               "anyKindOfName": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/core/fullName"
+               }
+            },
+            {
+               "names": {
+                  "type": "literal",
+                  "value": "Amyloid-beta A4 protein"
+               },
+               "protein": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/uniprot/P05067"
+               },
+               "anyKindOfName": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/core/fullName"
+               }
+            },
+            {
+               "names": {
+                  "type": "literal",
+                  "value": "ABPP"
+               },
+               "protein": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/uniprot/P05067"
+               },
+               "anyKindOfName": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/core/fullName"
+               }
+            },
+            {
+               "names": {
+                  "type": "literal",
+                  "value": "PreA4"
+               },
+               "protein": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/uniprot/P05067"
+               },
+               "anyKindOfName": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/core/fullName"
+               }
+            },
+            {
+               "names": {
+                  "type": "literal",
+                  "value": "Amyloid precursor protein"
+               },
+               "protein": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/uniprot/P05067"
+               },
+               "anyKindOfName": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/core/fullName"
+               }
+            },
+            {
+               "names": {
+                  "type": "literal",
+                  "value": "Alzheimer disease amyloid protein"
+               },
+               "protein": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/uniprot/P05067"
+               },
+               "anyKindOfName": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/core/fullName"
+               }
+            },
+            {
+               "names": {
+                  "type": "literal",
+                  "value": "Amyloid-beta (A4) precursor protein"
+               },
+               "protein": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/uniprot/P05067"
+               },
+               "anyKindOfName": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/core/fullName"
+               }
+            },
+            {
+               "names": {
+                  "type": "literal",
+                  "value": "Alzheimer disease amyloid A4 protein homolog"
+               },
+               "protein": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/uniprot/P05067"
+               },
+               "anyKindOfName": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/core/fullName"
+               }
+            },
+            {
+               "names": {
+                  "type": "literal",
+                  "value": "APPI"
+               },
+               "protein": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/uniprot/P05067"
+               },
+               "anyKindOfName": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/core/fullName"
+               }
+            },
+            {
+               "names": {
+                  "type": "literal",
+                  "value": "Protease nexin-II"
+               },
+               "protein": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/uniprot/P05067"
+               },
+               "anyKindOfName": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/core/fullName"
+               }
+            },
+            {
+               "names": {
+                  "type": "literal",
+                  "value": "CVAP"
+               },
+               "protein": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/uniprot/P05067"
+               },
+               "anyKindOfName": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/core/shortName"
+               }
+            },
+            {
+               "names": {
+                  "type": "literal",
+                  "value": "PN-II"
+               },
+               "protein": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/uniprot/P05067"
+               },
+               "anyKindOfName": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/core/shortName"
+               }
+            },
+            {
+               "names": {
+                  "type": "literal",
+                  "value": "APP"
+               },
+               "protein": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/uniprot/P05067"
+               },
+               "anyKindOfName": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/core/shortName"
+               }
+            },
+            {
+               "names": {
+                  "type": "literal",
+                  "value": "Beta-secretase C-terminal fragment"
+               },
+               "protein": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/uniprot/P05067"
+               },
+               "anyKindOfName": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/core/fullName"
+               },
+               "partType": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/core/component"
+               }
+            },
+            {
+               "names": {
+                  "type": "literal",
+                  "value": "AICD-57"
+               },
+               "protein": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/uniprot/P05067"
+               },
+               "anyKindOfName": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/core/shortName"
+               },
+               "partType": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/core/component"
+               }
+            },
+            {
+               "names": {
+                  "type": "literal",
+                  "value": "Beta-APP42"
+               },
+               "protein": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/uniprot/P05067"
+               },
+               "anyKindOfName": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/core/fullName"
+               },
+               "partType": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/core/component"
+               }
+            },
+            {
+               "names": {
+                  "type": "literal",
+                  "value": "AICD-50"
+               },
+               "protein": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/uniprot/P05067"
+               },
+               "anyKindOfName": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/core/shortName"
+               },
+               "partType": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/core/component"
+               }
+            },
+            {
+               "names": {
+                  "type": "literal",
+                  "value": "Amyloid intracellular domain 59"
+               },
+               "protein": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/uniprot/P05067"
+               },
+               "anyKindOfName": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/core/fullName"
+               },
+               "partType": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/core/component"
+               }
+            },
+            {
+               "names": {
+                  "type": "literal",
+                  "value": "Beta-CTF"
+               },
+               "protein": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/uniprot/P05067"
+               },
+               "anyKindOfName": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/core/shortName"
+               },
+               "partType": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/core/component"
+               }
+            }
+         ]
+      }
+   },
+   "error_msg": "",
+   "error_type": "",
+   "attempt": 1
+}

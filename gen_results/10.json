@@ -1,0 +1,243 @@
+{
+   "question": "Select all human UniProt entries with a sequence variant that leads to a tyrosine to phenylalanine substitution",
+   "expected_sparql": "SELECT ?protein ?annotation ?begin ?text\nWHERE\n{\n    ?protein a up:Protein ;\n             up:organism taxon:9606 ;\n             up:annotation ?annotation .\n    ?annotation a up:Natural_Variant_Annotation ;\n                rdfs:comment ?text ;\n                up:substitution ?substitution ;\n                up:range/faldo:begin\n                       [ faldo:position ?begin ;\n                         faldo:reference ?sequence ] .\n    ?sequence rdf:value ?value .\n    BIND (substr(?value, ?begin, 1) as ?original) .\n    FILTER(?original = 'Y' && ?substitution = 'F') .\n}\n",
+   "initial_sparql": "SELECT ?protein ?position\nWHERE\n{\n    ?protein a up:Protein ;\n            up:organism taxon:9606 ;\n            up:annotation ?annotation .\n    ?annotation a up:Natural_Variant_Annotation ;\n                up:substitution \"F\" ;\n                up:range ?range .\n    ?range faldo:begin/faldo:position ?position ;\n           faldo:begin/faldo:reference ?sequence .\n    ?sequence rdf:value ?seqvalue .\n    BIND(SUBSTR(?seqvalue, ?position, 1) AS ?originalAA)\n    FILTER(?originalAA = \"Y\")\n}",
+   "improved_sparql": "SELECT DISTINCT ?protein ?position\nWHERE\n{\n    ?protein a up:Protein ;\n            up:organism taxon:9606 ;\n            up:reviewed true ;\n            up:annotation ?annotation .\n    ?annotation a up:Natural_Variant_Annotation ;\n                up:originalSequence \"Y\" ;\n                up:substitution \"F\" ;\n                up:range ?range .\n    ?range faldo:begin/faldo:position ?position .\n}",
+   "actual_sparql": "\n            PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>\nPREFIX wikibase: <http://wikiba.se/ontology#>\nPREFIX wdt: <http://www.wikidata.org/prop/direct/>\nPREFIX wd: <http://www.wikidata.org/entity/>\nPREFIX vg: <http://biohackathon.org/resource/vg#>\nPREFIX up: <http://purl.uniprot.org/core/>\nPREFIX uniprotkb: <http://purl.uniprot.org/uniprot/>\nPREFIX uberon: <http://purl.obolibrary.org/obo/uo#>\nPREFIX taxon: <http://purl.uniprot.org/taxonomy/>\nPREFIX sp: <http://spinrdf.org/sp#>\nPREFIX skos: <http://www.w3.org/2004/02/skos/core#>\nPREFIX sio: <http://semanticscience.org/resource/>\nPREFIX sh: <http://www.w3.org/ns/shacl#>\nPREFIX schema: <http://schema.org/>\nPREFIX sachem: <http://bioinfo.uochb.cas.cz/rdf/v1.0/sachem#>\nPREFIX rh: <http://rdf.rhea-db.org/>\nPREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\nPREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\nPREFIX pubmed: <http://rdf.ncbi.nlm.nih.gov/pubmed/>\nPREFIX ps: <http://www.wikidata.org/prop/statement/>\nPREFIX pq: <http://www.wikidata.org/prop/qualifier/>\nPREFIX patent: <http://data.epo.org/linked-data/def/patent/>\nPREFIX p: <http://www.wikidata.org/prop/>\nPREFIX owl: <http://www.w3.org/2002/07/owl#>\nPREFIX orthodbGroup: <http://purl.orthodb.org/odbgroup/>\nPREFIX orthodb: <http://purl.orthodb.org/>\nPREFIX orth: <http://purl.org/net/orth#>\nPREFIX obo: <http://purl.obolibrary.org/obo/>\nPREFIX np: <http://nextprot.org/rdf#>\nPREFIX nextprot: <http://nextprot.org/rdf/entry/>\nPREFIX mnx: <https://rdf.metanetx.org/schema/>\nPREFIX mnet: <https://rdf.metanetx.org/mnet/>\nPREFIX mesh: <http://id.nlm.nih.gov/mesh/>\nPREFIX lscr: <http://purl.org/lscr#>\nPREFIX lipidmaps: <https://www.lipidmaps.org/rdf/>\nPREFIX keywords: <http://purl.uniprot.org/keywords/>\nPREFIX insdcschema: <http://ddbj.nig.ac.jp/ontologies/nucleotide/>\nPREFIX insdc: <http://identifiers.org/insdc/>\nPREFIX identifiers: <http://identifiers.org/>\nPREFIX glyconnect: <https://purl.org/glyconnect/>\nPREFIX glycan: <http://purl.jp/bio/12/glyco/glycan#>\nPREFIX genex: <http://purl.org/genex#>\nPREFIX foaf: <http://xmlns.com/foaf/0.1/>\nPREFIX faldo: <http://biohackathon.org/resource/faldo#>\nPREFIX eunisSpecies: <http://eunis.eea.europa.eu/rdf/species-schema.rdf#>\nPREFIX ensembltranscript: <http://rdf.ebi.ac.uk/resource/ensembl.transcript/>\nPREFIX ensemblterms: <http://rdf.ebi.ac.uk/terms/ensembl/>\nPREFIX ensemblprotein: <http://rdf.ebi.ac.uk/resource/ensembl.protein/>\nPREFIX ensemblexon: <http://rdf.ebi.ac.uk/resource/ensembl.exon/>\nPREFIX ensembl: <http://rdf.ebi.ac.uk/resource/ensembl/>\nPREFIX ec: <http://purl.uniprot.org/enzyme/>\nPREFIX dcterms: <http://purl.org/dc/terms/>\nPREFIX dc: <http://purl.org/dc/terms/>\nPREFIX chebislash: <http://purl.obolibrary.org/obo/chebi/>\nPREFIX chebihash: <http://purl.obolibrary.org/obo/chebi#>\nPREFIX cco: <http://rdf.ebi.ac.uk/terms/chembl#>\nPREFIX busco: <http://busco.ezlab.org/schema#>\nPREFIX bibo: <http://purl.org/ontology/bibo/>\nPREFIX allie: <http://allie.dbcls.jp/>\nPREFIX SWISSLIPID: <https://swisslipids.org/rdf/SLM_>\nPREFIX GO: <http://purl.obolibrary.org/obo/GO_>\nPREFIX ECO: <http://purl.obolibrary.org/obo/ECO_>\nPREFIX CHEBI: <http://purl.obolibrary.org/obo/CHEBI_>\n\n\n            SELECT ?protein ?position\nWHERE\n{\n    ?protein a up:Protein ;\n            up:organism taxon:9606 ;\n            up:annotation ?annotation .\n    ?annotation a up:Natural_Variant_Annotation ;\n                up:substitution \"F\" ;\n                up:range ?range .\n    ?range faldo:begin/faldo:position ?position ;\n           faldo:begin/faldo:reference ?sequence .\n    ?sequence rdf:value ?seqvalue .\n    BIND(SUBSTR(?seqvalue, ?position, 1) AS ?originalAA)\n    FILTER(?originalAA = \"Y\")\n}\n\n            LIMIT 20\n        ",
+   "is_orig_used": true,
+   "res": {
+      "head": {
+         "vars": [
+            "protein",
+            "position"
+         ]
+      },
+      "results": {
+         "bindings": [
+            {
+               "protein": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/uniprot/P78363"
+               },
+               "position": {
+                  "datatype": "http://www.w3.org/2001/XMLSchema#int",
+                  "type": "literal",
+                  "value": "2071"
+               }
+            },
+            {
+               "protein": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/uniprot/P78363"
+               },
+               "position": {
+                  "datatype": "http://www.w3.org/2001/XMLSchema#int",
+                  "type": "literal",
+                  "value": "2071"
+               }
+            },
+            {
+               "protein": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/uniprot/O94911"
+               },
+               "position": {
+                  "datatype": "http://www.w3.org/2001/XMLSchema#int",
+                  "type": "literal",
+                  "value": "489"
+               }
+            },
+            {
+               "protein": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/uniprot/O94911"
+               },
+               "position": {
+                  "datatype": "http://www.w3.org/2001/XMLSchema#int",
+                  "type": "literal",
+                  "value": "489"
+               }
+            },
+            {
+               "protein": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/uniprot/Q86UQ4"
+               },
+               "position": {
+                  "datatype": "http://www.w3.org/2001/XMLSchema#int",
+                  "type": "literal",
+                  "value": "3851"
+               }
+            },
+            {
+               "protein": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/uniprot/Q86UQ4"
+               },
+               "position": {
+                  "datatype": "http://www.w3.org/2001/XMLSchema#int",
+                  "type": "literal",
+                  "value": "3851"
+               }
+            },
+            {
+               "protein": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/uniprot/Q9H221"
+               },
+               "position": {
+                  "datatype": "http://www.w3.org/2001/XMLSchema#int",
+                  "type": "literal",
+                  "value": "641"
+               }
+            },
+            {
+               "protein": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/uniprot/Q9H221"
+               },
+               "position": {
+                  "datatype": "http://www.w3.org/2001/XMLSchema#int",
+                  "type": "literal",
+                  "value": "641"
+               }
+            },
+            {
+               "protein": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/uniprot/Q9UL18"
+               },
+               "position": {
+                  "datatype": "http://www.w3.org/2001/XMLSchema#int",
+                  "type": "literal",
+                  "value": "418"
+               }
+            },
+            {
+               "protein": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/uniprot/Q9UL18"
+               },
+               "position": {
+                  "datatype": "http://www.w3.org/2001/XMLSchema#int",
+                  "type": "literal",
+                  "value": "418"
+               }
+            },
+            {
+               "protein": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/uniprot/Q9NZN9"
+               },
+               "position": {
+                  "datatype": "http://www.w3.org/2001/XMLSchema#int",
+                  "type": "literal",
+                  "value": "134"
+               }
+            },
+            {
+               "protein": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/uniprot/Q9NZN9"
+               },
+               "position": {
+                  "datatype": "http://www.w3.org/2001/XMLSchema#int",
+                  "type": "literal",
+                  "value": "134"
+               }
+            },
+            {
+               "protein": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/uniprot/P54802"
+               },
+               "position": {
+                  "datatype": "http://www.w3.org/2001/XMLSchema#int",
+                  "type": "literal",
+                  "value": "658"
+               }
+            },
+            {
+               "protein": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/uniprot/P54802"
+               },
+               "position": {
+                  "datatype": "http://www.w3.org/2001/XMLSchema#int",
+                  "type": "literal",
+                  "value": "658"
+               }
+            },
+            {
+               "protein": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/uniprot/Q9NZN5"
+               },
+               "position": {
+                  "datatype": "http://www.w3.org/2001/XMLSchema#int",
+                  "type": "literal",
+                  "value": "973"
+               }
+            },
+            {
+               "protein": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/uniprot/Q9NZN5"
+               },
+               "position": {
+                  "datatype": "http://www.w3.org/2001/XMLSchema#int",
+                  "type": "literal",
+                  "value": "973"
+               }
+            },
+            {
+               "protein": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/uniprot/P04114"
+               },
+               "position": {
+                  "datatype": "http://www.w3.org/2001/XMLSchema#int",
+                  "type": "literal",
+                  "value": "3964"
+               }
+            },
+            {
+               "protein": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/uniprot/P04114"
+               },
+               "position": {
+                  "datatype": "http://www.w3.org/2001/XMLSchema#int",
+                  "type": "literal",
+                  "value": "3964"
+               }
+            },
+            {
+               "protein": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/uniprot/Q8TE59"
+               },
+               "position": {
+                  "datatype": "http://www.w3.org/2001/XMLSchema#int",
+                  "type": "literal",
+                  "value": "1089"
+               }
+            },
+            {
+               "protein": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/uniprot/Q8TE59"
+               },
+               "position": {
+                  "datatype": "http://www.w3.org/2001/XMLSchema#int",
+                  "type": "literal",
+                  "value": "1089"
+               }
+            }
+         ]
+      }
+   },
+   "error_msg": "",
+   "error_type": "",
+   "attempt": 2
+}

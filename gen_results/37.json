@@ -1,0 +1,304 @@
+{
+   "question": "Map PDB identifiers plus chains to UniProt",
+   "expected_sparql": "SELECT\n  ?pdbId ?chain ?pdbChain ?uniprot\nWHERE\n{\n  # A space separated list of pairs of PDB identifiers and the chain code.\n  VALUES(?pdbId ?pdbChain) { ('6VXC' 'A') ('1BG3' 'B') }\n  # Make an IRI out of the pdbId\n  BIND(iri(concat('http://rdf.wwpdb.org/pdb/', ?pdbId)) AS ?pdb)\n  # Map to UniProt entries\n  ?uniprot rdfs:seeAlso ?pdb .\n  ?pdb up:database <http://purl.uniprot.org/database/PDB> ;\n       up:chainSequenceMapping ?chainSm .\n  ?chainSm up:chain ?chainsPlusRange .\n  # Extract the list of chains from the text representation.\n  BIND(STRBEFORE(?chainsPlusRange, '=') AS ?chain)\n  # Filter those that match.\n  FILTER(CONTAINS(?chain, ?pdbChain))\n}\n",
+   "initial_sparql": "SELECT ?protein ?pdb\nWHERE\n{\n    ?protein a up:Protein .\n    ?protein rdfs:seeAlso ?pdb .\n    ?pdb up:database <http://purl.uniprot.org/database/PDB>\n}",
+   "improved_sparql": "SELECT DISTINCT ?protein ?pdbid ?chain\nWHERE\n{\n    ?protein rdfs:seeAlso ?pdb .\n    ?pdb up:database <http://purl.uniprot.org/database/PDB> .\n    BIND(REPLACE(str(?pdb), \"^.*pdb/([A-Z0-9]{4})(_([A-Z0-9]+))?$\", \"$1\") AS ?pdbid)\n    BIND(REPLACE(str(?pdb), \"^.*pdb/[A-Z0-9]{4}_([A-Z0-9]+)$\", \"$1\") AS ?chain)\n}",
+   "actual_sparql": "\n            PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>\nPREFIX wikibase: <http://wikiba.se/ontology#>\nPREFIX wdt: <http://www.wikidata.org/prop/direct/>\nPREFIX wd: <http://www.wikidata.org/entity/>\nPREFIX vg: <http://biohackathon.org/resource/vg#>\nPREFIX up: <http://purl.uniprot.org/core/>\nPREFIX uniprotkb: <http://purl.uniprot.org/uniprot/>\nPREFIX uberon: <http://purl.obolibrary.org/obo/uo#>\nPREFIX taxon: <http://purl.uniprot.org/taxonomy/>\nPREFIX sp: <http://spinrdf.org/sp#>\nPREFIX skos: <http://www.w3.org/2004/02/skos/core#>\nPREFIX sio: <http://semanticscience.org/resource/>\nPREFIX sh: <http://www.w3.org/ns/shacl#>\nPREFIX schema: <http://schema.org/>\nPREFIX sachem: <http://bioinfo.uochb.cas.cz/rdf/v1.0/sachem#>\nPREFIX rh: <http://rdf.rhea-db.org/>\nPREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\nPREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\nPREFIX pubmed: <http://rdf.ncbi.nlm.nih.gov/pubmed/>\nPREFIX ps: <http://www.wikidata.org/prop/statement/>\nPREFIX pq: <http://www.wikidata.org/prop/qualifier/>\nPREFIX patent: <http://data.epo.org/linked-data/def/patent/>\nPREFIX p: <http://www.wikidata.org/prop/>\nPREFIX owl: <http://www.w3.org/2002/07/owl#>\nPREFIX orthodbGroup: <http://purl.orthodb.org/odbgroup/>\nPREFIX orthodb: <http://purl.orthodb.org/>\nPREFIX orth: <http://purl.org/net/orth#>\nPREFIX obo: <http://purl.obolibrary.org/obo/>\nPREFIX np: <http://nextprot.org/rdf#>\nPREFIX nextprot: <http://nextprot.org/rdf/entry/>\nPREFIX mnx: <https://rdf.metanetx.org/schema/>\nPREFIX mnet: <https://rdf.metanetx.org/mnet/>\nPREFIX mesh: <http://id.nlm.nih.gov/mesh/>\nPREFIX lscr: <http://purl.org/lscr#>\nPREFIX lipidmaps: <https://www.lipidmaps.org/rdf/>\nPREFIX keywords: <http://purl.uniprot.org/keywords/>\nPREFIX insdcschema: <http://ddbj.nig.ac.jp/ontologies/nucleotide/>\nPREFIX insdc: <http://identifiers.org/insdc/>\nPREFIX identifiers: <http://identifiers.org/>\nPREFIX glyconnect: <https://purl.org/glyconnect/>\nPREFIX glycan: <http://purl.jp/bio/12/glyco/glycan#>\nPREFIX genex: <http://purl.org/genex#>\nPREFIX foaf: <http://xmlns.com/foaf/0.1/>\nPREFIX faldo: <http://biohackathon.org/resource/faldo#>\nPREFIX eunisSpecies: <http://eunis.eea.europa.eu/rdf/species-schema.rdf#>\nPREFIX ensembltranscript: <http://rdf.ebi.ac.uk/resource/ensembl.transcript/>\nPREFIX ensemblterms: <http://rdf.ebi.ac.uk/terms/ensembl/>\nPREFIX ensemblprotein: <http://rdf.ebi.ac.uk/resource/ensembl.protein/>\nPREFIX ensemblexon: <http://rdf.ebi.ac.uk/resource/ensembl.exon/>\nPREFIX ensembl: <http://rdf.ebi.ac.uk/resource/ensembl/>\nPREFIX ec: <http://purl.uniprot.org/enzyme/>\nPREFIX dcterms: <http://purl.org/dc/terms/>\nPREFIX dc: <http://purl.org/dc/terms/>\nPREFIX chebislash: <http://purl.obolibrary.org/obo/chebi/>\nPREFIX chebihash: <http://purl.obolibrary.org/obo/chebi#>\nPREFIX cco: <http://rdf.ebi.ac.uk/terms/chembl#>\nPREFIX busco: <http://busco.ezlab.org/schema#>\nPREFIX bibo: <http://purl.org/ontology/bibo/>\nPREFIX allie: <http://allie.dbcls.jp/>\nPREFIX SWISSLIPID: <https://swisslipids.org/rdf/SLM_>\nPREFIX GO: <http://purl.obolibrary.org/obo/GO_>\nPREFIX ECO: <http://purl.obolibrary.org/obo/ECO_>\nPREFIX CHEBI: <http://purl.obolibrary.org/obo/CHEBI_>\n\n\n            SELECT DISTINCT ?protein ?pdbid ?chain\nWHERE\n{\n    ?protein rdfs:seeAlso ?pdb .\n    ?pdb up:database <http://purl.uniprot.org/database/PDB> .\n    BIND(REPLACE(str(?pdb), \"^.*pdb/([A-Z0-9]{4})(_([A-Z0-9]+))?$\", \"$1\") AS ?pdbid)\n    BIND(REPLACE(str(?pdb), \"^.*pdb/[A-Z0-9]{4}_([A-Z0-9]+)$\", \"$1\") AS ?chain)\n}\n\n            LIMIT 20\n        ",
+   "is_orig_used": false,
+   "res": {
+      "head": {
+         "vars": [
+            "protein",
+            "pdbid",
+            "chain"
+         ]
+      },
+      "results": {
+         "bindings": [
+            {
+               "pdbid": {
+                  "type": "literal",
+                  "value": "2A9V"
+               },
+               "chain": {
+                  "type": "literal",
+                  "value": "http://rdf.wwpdb.org/pdb/2A9V"
+               },
+               "protein": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/uniprot/Q9HJM3"
+               }
+            },
+            {
+               "pdbid": {
+                  "type": "literal",
+                  "value": "2FSJ"
+               },
+               "chain": {
+                  "type": "literal",
+                  "value": "http://rdf.wwpdb.org/pdb/2FSJ"
+               },
+               "protein": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/uniprot/Q9HKL4"
+               }
+            },
+            {
+               "pdbid": {
+                  "type": "literal",
+                  "value": "2FSK"
+               },
+               "chain": {
+                  "type": "literal",
+                  "value": "http://rdf.wwpdb.org/pdb/2FSK"
+               },
+               "protein": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/uniprot/Q9HKL4"
+               }
+            },
+            {
+               "pdbid": {
+                  "type": "literal",
+                  "value": "2FSN"
+               },
+               "chain": {
+                  "type": "literal",
+                  "value": "http://rdf.wwpdb.org/pdb/2FSN"
+               },
+               "protein": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/uniprot/Q9HKL4"
+               }
+            },
+            {
+               "pdbid": {
+                  "type": "literal",
+                  "value": "2IFC"
+               },
+               "chain": {
+                  "type": "literal",
+                  "value": "http://rdf.wwpdb.org/pdb/2IFC"
+               },
+               "protein": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/uniprot/P21553"
+               }
+            },
+            {
+               "pdbid": {
+                  "type": "literal",
+                  "value": "2OHC"
+               },
+               "chain": {
+                  "type": "literal",
+                  "value": "http://rdf.wwpdb.org/pdb/2OHC"
+               },
+               "protein": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/uniprot/Q9HIY5"
+               }
+            },
+            {
+               "pdbid": {
+                  "type": "literal",
+                  "value": "2OHE"
+               },
+               "chain": {
+                  "type": "literal",
+                  "value": "http://rdf.wwpdb.org/pdb/2OHE"
+               },
+               "protein": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/uniprot/Q9HIY5"
+               }
+            },
+            {
+               "pdbid": {
+                  "type": "literal",
+                  "value": "2R26"
+               },
+               "chain": {
+                  "type": "literal",
+                  "value": "http://rdf.wwpdb.org/pdb/2R26"
+               },
+               "protein": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/uniprot/P21553"
+               }
+            },
+            {
+               "pdbid": {
+                  "type": "literal",
+                  "value": "2R9E"
+               },
+               "chain": {
+                  "type": "literal",
+                  "value": "http://rdf.wwpdb.org/pdb/2R9E"
+               },
+               "protein": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/uniprot/P21553"
+               }
+            },
+            {
+               "pdbid": {
+                  "type": "literal",
+                  "value": "3IDD"
+               },
+               "chain": {
+                  "type": "literal",
+                  "value": "http://rdf.wwpdb.org/pdb/3IDD"
+               },
+               "protein": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/uniprot/Q9HL27"
+               }
+            },
+            {
+               "pdbid": {
+                  "type": "literal",
+                  "value": "3KD8"
+               },
+               "chain": {
+                  "type": "literal",
+                  "value": "http://rdf.wwpdb.org/pdb/3KD8"
+               },
+               "protein": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/uniprot/Q9HL27"
+               }
+            },
+            {
+               "pdbid": {
+                  "type": "literal",
+                  "value": "3NGL"
+               },
+               "chain": {
+                  "type": "literal",
+                  "value": "http://rdf.wwpdb.org/pdb/3NGL"
+               },
+               "protein": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/uniprot/Q05213"
+               }
+            },
+            {
+               "pdbid": {
+                  "type": "literal",
+                  "value": "3NGX"
+               },
+               "chain": {
+                  "type": "literal",
+                  "value": "http://rdf.wwpdb.org/pdb/3NGX"
+               },
+               "protein": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/uniprot/Q05213"
+               }
+            },
+            {
+               "pdbid": {
+                  "type": "literal",
+                  "value": "3OJ0"
+               },
+               "chain": {
+                  "type": "literal",
+                  "value": "http://rdf.wwpdb.org/pdb/3OJ0"
+               },
+               "protein": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/uniprot/Q97B68"
+               }
+            },
+            {
+               "pdbid": {
+                  "type": "literal",
+                  "value": "3OZ2"
+               },
+               "chain": {
+                  "type": "literal",
+                  "value": "http://rdf.wwpdb.org/pdb/3OZ2"
+               },
+               "protein": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/uniprot/Q9HKS9"
+               }
+            },
+            {
+               "pdbid": {
+                  "type": "literal",
+                  "value": "4YBO"
+               },
+               "chain": {
+                  "type": "literal",
+                  "value": "http://rdf.wwpdb.org/pdb/4YBO"
+               },
+               "protein": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/uniprot/P21553"
+               }
+            },
+            {
+               "pdbid": {
+                  "type": "literal",
+                  "value": "4Z9E"
+               },
+               "chain": {
+                  "type": "literal",
+                  "value": "http://rdf.wwpdb.org/pdb/4Z9E"
+               },
+               "protein": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/uniprot/Q979S5"
+               }
+            },
+            {
+               "pdbid": {
+                  "type": "literal",
+                  "value": "5IZD"
+               },
+               "chain": {
+                  "type": "literal",
+                  "value": "http://rdf.wwpdb.org/pdb/5IZD"
+               },
+               "protein": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/uniprot/Q9HK01"
+               }
+            },
+            {
+               "pdbid": {
+                  "type": "literal",
+                  "value": "5J77"
+               },
+               "chain": {
+                  "type": "literal",
+                  "value": "http://rdf.wwpdb.org/pdb/5J77"
+               },
+               "protein": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/uniprot/Q9HK01"
+               }
+            },
+            {
+               "pdbid": {
+                  "type": "literal",
+                  "value": "5M4X"
+               },
+               "chain": {
+                  "type": "literal",
+                  "value": "http://rdf.wwpdb.org/pdb/5M4X"
+               },
+               "protein": {
+                  "type": "uri",
+                  "value": "http://purl.uniprot.org/uniprot/Q9HK01"
+               }
+            }
+         ]
+      }
+   },
+   "error_msg": "",
+   "error_type": "",
+   "attempt": 1
+}
