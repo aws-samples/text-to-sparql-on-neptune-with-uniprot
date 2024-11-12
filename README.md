@@ -1,4 +1,23 @@
-# sparql-generation
+# Text-to-SPARQL Generation for UniProt
+
+In this repository, we demonstrate how to ask natural language questions about proteins on the [Universal Protein Resource (UniProt)](https://www.uniprot.org/help/uniprotkb) data set. UniProt is a graph dataset defined using [Resource Description Framework (RDF)](https://www.w3.org/RDF/). We can query it using RDF's [SPARQL](https://www.w3.org/TR/sparql11-query/) query language against a triple store that has the UniProt data. 
+
+We demonstrate how to enable users who have domain knowledge of proteins (but are not necessarily developers proficient in SPARQL) to ask natural language questions about proteins and use a large language model (LLM) to convert the question to a SPARQL query. 
+
+For example, if the user asks ```Select all bacterial taxa and their scientific names from the UniProt taxonomy```, we will attempt to have the LLM generate a SPARQL query like the following:
+
+```
+SELECT ?taxon ?name
+    WHERE
+    {
+        ?taxon a up:Taxon .
+        ?taxon up:scientificName ?name .
+        ?taxon rdfs:subClassOf taxon:2 .
+    }
+```
+
+
+
 
 ## Prerequisites
 
