@@ -44,21 +44,16 @@ Follow instructions in [https://docs.aws.amazon.com/AmazonS3/latest/userguide/cr
 ### (Optional) Setup Amazon Neptune Cluster
 Create a Neptune cluster and a notebook instance. One way to setup these resources is using the CloudForamtion template via [https://docs.aws.amazon.com/neptune/latest/userguide/get-started-cfn-create.html](https://docs.aws.amazon.com/neptune/latest/userguide/get-started-cfn-create.html). We recommend using a `NotebookInstanceType` of `ml.t3.medium` or higher. If you don't intend to use the Neptune database, you may skip this step.
 
-## Run the solution
-In your notebook instance, clone this repository. Run the notebooks in the following order:
+### Setup notebook
+We use Jupyter as our test client. If you setup a Neptune cluster, a Sagemaker notebook instance has already been created for you, but additional setup steps are reuired. If you did not setup a Neptune cluster, you can provision a SageMaker notebook instance or install Jupyter in a non-SageMaker environment.
 
-1. (Optional) Open [uniprot_loader.ipynb](uniprot_loader.ipynb) to load Uniprot data to your Neptune database. Run through the cells: set the name of the S3 staging bucket that you created; synchronize a copy of the UniProt files from a public bucket to your staging bucket; bulk-load the files from your staging bucket to the Neptune cluster; then verify by running sample SPARQL queries on the Neptune database.
-2. Open [get_expected_results.ipynb](get_expected_results.ipynb) to run each of the ground-truth example queries -- which you can find in [resources/ground-truth.yaml](resources/ground-truth.yaml) -- against either the UniProt reference site or your Neptune database. The results are written to a local folder called ```up``` (if run against UniProt reference) or ```expected``` (if run against Neptune database). We provide a copy of that folder in this repo -- [up](up) -- for comparison. 
-3.  Open [run_gen_tests.ipynb](run_gen_tests.ipynb) to test LLM generation of natural language UniProt questions. The notebook tests each question in ground truth, prompting the LLM to generate SPARQL for each, then running the generated SPARQL against either the UniProf reference site (by default) or your Neptune database. Results are written to the local ```gen_results``` folder. We provide a copy of that folder in this repo -- [gen_results](gen_results) -- for comparison. You can also ask your own question too. See ```run_yourown_query()``` examples.
-4. Open [compared_expected_gen.ipynb](compared_expected_gen.ipynb) to compare expected and actual queries. The notebook effectively compares results of the previous two notebooks. It presents its results for side-by-side comparison, question by question, in HTML form. You can review our results in [comparison.html](comparison.html).
-   
-### Installation as a Sagemaker Studio notebook
+#### Notebook created with Neptune
+In the SageMaker console, locate the notebook instance that was created by the Neptune cluster CloudFormation stack. Find its IAM role under `Permissions and encryption` on the details page for the notebook. Select that role and add the following IAM managed policies as follows:
 
-@todo@
+- `AmazonS3FullAccess`. The notebook should already have read access to all S3 buckets. But you also need write access to the S3 bucket you created above.
+- `AmazonBedrockFullAccess`: The notebook needs access to Bedrock. 
 
-### Installation as a Sagemaker non-Studio notebook
-
-
+#### Create SageMaker notebook instance
 Follow the following steps:
 
 1. [Install](https://python-poetry.org/docs/) Poetry
@@ -75,7 +70,7 @@ export AWS_SESSION_TOKEN=...
 ```
 10. Create a new notebook and choose the newly-created kernel.
 
-### Installation in a non-Sagemaker environment
+#### Installation in a non-Sagemaker environment
 
 Follow the following steps:
 
@@ -95,9 +90,17 @@ export AWS_SESSION_TOKEN=...
 ```
 10. Start the Jupyter server: `jupyter lab`
 
-## Installing Uniprot
 
-@todo@
+
+
+## Run the solution
+In your notebook instance, clone this repository. Run the notebooks in the following order:
+
+1. (Optional) Open [uniprot_loader.ipynb](uniprot_loader.ipynb) to load Uniprot data to your Neptune database. Run through the cells: set the name of the S3 staging bucket that you created; synchronize a copy of the UniProt files from a public bucket to your staging bucket; bulk-load the files from your staging bucket to the Neptune cluster; then verify by running sample SPARQL queries on the Neptune database.
+2. Open [get_expected_results.ipynb](get_expected_results.ipynb) to run each of the ground-truth example queries -- which you can find in [resources/ground-truth.yaml](resources/ground-truth.yaml) -- against either the UniProt reference site or your Neptune database. The results are written to a local folder called ```up``` (if run against UniProt reference) or ```expected``` (if run against Neptune database). We provide a copy of that folder in this repo -- [up](up) -- for comparison. 
+3.  Open [run_gen_tests.ipynb](run_gen_tests.ipynb) to test LLM generation of natural language UniProt questions. The notebook tests each question in ground truth, prompting the LLM to generate SPARQL for each, then running the generated SPARQL against either the UniProf reference site (by default) or your Neptune database. Results are written to the local ```gen_results``` folder. We provide a copy of that folder in this repo -- [gen_results](gen_results) -- for comparison. You can also ask your own question too. See ```run_yourown_query()``` examples.
+4. Open [compared_expected_gen.ipynb](compared_expected_gen.ipynb) to compare expected and actual queries. The notebook effectively compares results of the previous two notebooks. It presents its results for side-by-side comparison, question by question, in HTML form. You can review our results in [comparison.html](comparison.html).
+   
 
 ## Cleanup
 If you are done and wish to avoid further charges, remove the solution as follows:
