@@ -47,13 +47,17 @@ Create a Neptune cluster and a notebook instance. One way to setup these resourc
 ### Setup notebook
 We use Jupyter as our test client. If you setup a Neptune cluster, a Sagemaker notebook instance has already been created for you, but additional setup steps are reuired. If you did not setup a Neptune cluster, you can provision a SageMaker notebook instance or install Jupyter in a non-SageMaker environment.
 
-#### Notebook created with Neptune
+#### Option 1: Notebook created with Neptune
 In the SageMaker console, locate the notebook instance that was created by the Neptune cluster CloudFormation stack. Find its IAM role under `Permissions and encryption` on the details page for the notebook. Select that role and add the following IAM managed policies as follows:
 
 - `AmazonS3FullAccess`. The notebook should already have read access to all S3 buckets. But you also need write access to the S3 bucket you created above.
 - `AmazonBedrockFullAccess`: The notebook needs access to Bedrock. 
 
-#### Create SageMaker notebook instance
+#### Option 2: Create SageMaker notebook instance
+
+Create a SageMaker notebook instance: <https://docs.aws.amazon.com/sagemaker/latest/dg/howitworks-create-ws.html>. Ensure the IAM role for the instance has full Bedrock access. Ensure the instance can connect to both Bedrock service and public internet. 
+
+rest of this section TODO
 Follow the following steps:
 
 1. [Install](https://python-poetry.org/docs/) Poetry
@@ -71,6 +75,10 @@ export AWS_SESSION_TOKEN=...
 10. Create a new notebook and choose the newly-created kernel.
 
 #### Installation in a non-Sagemaker environment
+
+The environment requires network connectivity to Amazon Bedrock and the public internet. The IAM identiity you use requires full Bedrock access.
+
+Rest of this section TODO
 
 Follow the following steps:
 
