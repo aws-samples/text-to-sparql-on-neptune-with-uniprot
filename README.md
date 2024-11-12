@@ -73,8 +73,9 @@ If you are done and wish to avoid further charges, remove the solution as follow
 
 - Delete the CloudFormation stack you created for the Neptune cluster and notebook instance. See <https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/cfn-console-delete-stack.html> for instructions how to delete a stack.
 - Remove the S3 bucket. See <https://docs.aws.amazon.com/AmazonS3/latest/userguide/delete-bucket.html>.
+- If you created a SageMaker notebook instance, remove it. See <https://docs.aws.amazon.com/sagemaker/latest/dg/ex1-cleanup.html>.
 
 ## Cost
 
-This solution incurs cost. Refer to pricing guides for [Neptune](https://aws.amazon.com/neptune/pricing/), [S3](https://aws.amazon.com/s3/pricing/), [Bedrock]([https://aws.amazon.com/opensearch-service/pricing/](https://aws.amazon.com/bedrock/pricing/)), and [SageMaker](https://aws.amazon.com/sagemaker/pricing/).
+This solution incurs cost. Refer to pricing guides for [Neptune](https://aws.amazon.com/neptune/pricing/), [S3](https://aws.amazon.com/s3/pricing/), [Bedrock](https://aws.amazon.com/bedrock/pricing/)], and [SageMaker](https://aws.amazon.com/sagemaker/pricing/).
 
