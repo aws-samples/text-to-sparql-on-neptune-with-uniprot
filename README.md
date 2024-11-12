@@ -55,51 +55,9 @@ In the SageMaker console, locate the notebook instance that was created by the N
 
 #### Option 2: Create SageMaker notebook instance
 
-Create a SageMaker notebook instance: <https://docs.aws.amazon.com/sagemaker/latest/dg/howitworks-create-ws.html>. Ensure the IAM role for the instance has full Bedrock access. Ensure the instance can connect to both Bedrock service and public internet. 
+Create a SageMaker notebook instance. Choose ```Amazon Linux 2, Jupyter Lab 3``` are platform identifier. Ensure the IAM role for the instance has full Bedrock access. Ensure the instance's network allows connectivity to both the Bedrock service and the public internet. 
 
-rest of this section TODO
-Follow the following steps:
-
-1. [Install](https://python-poetry.org/docs/) Poetry
-2. Clone this repo: `git clone git@ssh.gitlab.aws.dev:simongh/sparql-generation.git` @todo@ change this
-3. Change directory to the root of this repo: `cd sparql-generation` @todo@ change this
-4. Install the required Python packages and create a new virtual environment: `poetry install`
-5. Switch to this virtual environment: `poetry shell`
-6. `python -m ipykernel install --user --name=sparql-generation-kernel`
-9. Delete the cell in the notebook that looks like this:
-```
-export AWS_ACCESS_KEY_ID=...
-export AWS_SECRET_ACCESS_KEY=...
-export AWS_SESSION_TOKEN=...
-```
-10. Create a new notebook and choose the newly-created kernel.
-
-#### Installation in a non-Sagemaker environment
-
-The environment requires network connectivity to Amazon Bedrock and the public internet. The IAM identiity you use requires full Bedrock access.
-
-Rest of this section TODO
-
-Follow the following steps:
-
-1. [Install](https://github.com/pyenv/pyenv?tab=readme-ov-file#installation) pyenv
-2. Use pyenv to install Python 3.11.4: `pyenv install 3.11.4`. Note that the code here might work on other versions of Python but has only been tested on this version.
-3. Tell pyenv to use this version of Python: `pyenv local 3.11.4`
-4. [Install](https://python-poetry.org/docs/) Poetry
-5. Clone this repo: `git clone git@ssh.gitlab.aws.dev:simongh/sparql-generation.git` @todo@ change this
-6. Change directory to the root of this repo: `cd sparql-generation` @todo@ change this
-7. Install the required Python packages and create a new virtual environment: `poetry install`
-8. Switch to this virtual environment: `poetry shell`
-9. Set up the environment variables to authenticate with AWS:
-```
-export AWS_ACCESS_KEY_ID=...
-export AWS_SECRET_ACCESS_KEY=...
-export AWS_SESSION_TOKEN=...
-```
-10. Start the Jupyter server: `jupyter lab`
-
-
-
+See <https://docs.aws.amazon.com/sagemaker/latest/dg/howitworks-create-ws.html>.
 
 ## Run the solution
 In your notebook instance, clone this repository. Run the notebooks in the following order:
