@@ -62,7 +62,8 @@ See <https://docs.aws.amazon.com/sagemaker/latest/dg/howitworks-create-ws.html>.
 ## Run the solution
 In your notebook instance, clone this repository. Run the notebooks in the following order:
 
-1. (Optional) Open [uniprot_loader.ipynb](uniprot_loader.ipynb) to load Uniprot data to your Neptune database. Run through the cells: set the name of the S3 staging bucket that you created; synchronize a copy of the UniProt files from a public bucket to your staging bucket; bulk-load the files from your staging bucket to the Neptune cluster; then verify by running sample SPARQL queries on the Neptune database.
+1. (Optional) Open [uniprot_loader.ipynb](uniprot_loader.ipynb) to load Uniprot data to your Neptune database. Run through the cells: set the name of the S3 staging bucket that you created; synchronize a copy of the UniProt files from a public bucket to your staging bucket; bulk-load the files from your staging bucket to the Neptune cluster; then verify by running sample SPARQL queries on the Neptune database. 
+    * The UniProt dataset is large (several hundred GB), so to improve load time into Neptune, we recommend changing the instance type of the writer instance in the cluster to be r6i.12xlarge or r5.12xlarge instance prior to starting the load. When load is complete, switch back to the instance size you were using previously. 
 2. Open [get_expected_results.ipynb](get_expected_results.ipynb) to run each of the ground-truth example queries -- which you can find in [resources/ground-truth.yaml](resources/ground-truth.yaml) -- against either the UniProt reference site or your Neptune database. The results are written to a local folder called ```up``` (if run against UniProt reference) or ```expected``` (if run against Neptune database). We provide a copy of that folder in this repo -- [up](up) -- for comparison. 
 3.  Open [run_gen_tests.ipynb](run_gen_tests.ipynb) to test LLM generation of natural language UniProt questions. The notebook tests each question in ground truth, prompting the LLM to generate SPARQL for each, then running the generated SPARQL against either the UniProf reference site (by default) or your Neptune database. Results are written to the local ```gen_results``` folder. We provide a copy of that folder in this repo -- [gen_results](gen_results) -- for comparison. You can also ask your own question too. See ```run_yourown_query()``` examples.
 4. Open [compared_expected_gen.ipynb](compared_expected_gen.ipynb) to compare expected and actual queries. The notebook effectively compares results of the previous two notebooks. It presents its results for side-by-side comparison, question by question, in HTML form. You can review our results in [comparison.html](comparison.html).
@@ -77,5 +78,20 @@ If you are done and wish to avoid further charges, remove the solution as follow
 
 ## Cost
 
-This solution incurs cost. Refer to pricing guides for [Neptune](https://aws.amazon.com/neptune/pricing/), [S3](https://aws.amazon.com/s3/pricing/), [Bedrock](https://aws.amazon.com/bedrock/pricing/)], and [SageMaker](https://aws.amazon.com/sagemaker/pricing/).
+This solution incurs cost. Refer to pricing guides for [Neptune](https://aws.amazon.com/neptune/pricing/), [S3](https://aws.amazon.com/s3/pricing/), [Bedrock](https://aws.amazon.com/bedrock/pricing/), and [SageMaker](https://aws.amazon.com/sagemaker/pricing/). 
+
+Here is a rough estimate of cost based on current US-East-1 pricing. This is not a quote. Your costs may differ. Please check your own costs carefully.
+
+- S3 cost: $12/month for 500 GB storage and 1M GET requests in S3 Standard storage class.
+- SageMaker notebook cost: $11/month for single ml.t3.medium instance running 30 percent of the time (and shut down the remainder of the time)
+- Bedrock: $10 total to run the 40+ query generations for Anthropic Claude Sonnet 3.5.
+- Neptune cost during load: 
+    * $600 cost for 72 hours use of single r5.12xlarge instance.
+    * $60 storage and IO cost for 500 GB and 50M IO requests.
+- Neptune cost post-load:
+    * $260/month instance cost for serverless instance consuming 16 NCU for about 2 hours/day and idle the rest of the time.
+    * $50/month storage cost for 500 GB 
+
+As mentioned above, use of Neptune is optional. 
+
 
