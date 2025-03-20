@@ -16,6 +16,7 @@ from time import sleep
 from itertools import count
 
 import requests
+import boto3
 from botocore.exceptions import ClientError
 from botocore.awsrequest import AWSRequest
 from botocore.auth import SigV4Auth
@@ -280,4 +281,15 @@ def write_sparql_res(folder_name, file_prefix, question, expected_sparql, actual
         resfile.write(json.dumps(res_record, indent=3))
     return res_record
 
-        
+
+def get_sagemaker_region() -> str:
+    # SageMaker stores instance metadata at this path
+    metadata_path = "/opt/ml/metadata/resource-metadata.json"
+    try:
+        metadata_str = Path(metadata_path).read_text()
+        metadata = json.loads(metadata_str)
+        resource_arn = metadata["ResourceArn"]
+        return resource_arn.split(":")[3]
+    except FileNotFoundError:
+        # Fallback: Use boto3 default session
+        return boto3.session.Session().region_name
