@@ -48,14 +48,33 @@ Create a Neptune cluster and a notebook instance. One way to setup these resourc
 We use Jupyter as our test client. If you setup a Neptune cluster, a Sagemaker notebook instance has already been created for you, but additional setup steps are reuired. If you did not setup a Neptune cluster, you can provision a SageMaker notebook instance or install Jupyter in a non-SageMaker environment.
 
 #### Option 1: Notebook created with Neptune
-In the SageMaker console, locate the notebook instance that was created by the Neptune cluster CloudFormation stack. Find its IAM role under `Permissions and encryption` on the details page for the notebook. Select that role and add the following IAM managed policies as follows:
+In the SageMaker console, locate the notebook instance that was created by the Neptune cluster CloudFormation stack. Find its IAM role under `Permissions and encryption` on the details page for the notebook. Select that role and add the following IAM policies:
 
-- `AmazonS3FullAccess`. The notebook should already have read access to all S3 buckets. But you also need write access to the S3 bucket you created above.
+- The notebook should have read-only access to the uniprot data. For example, if the data is stored in s3://my-uniprot-data (this must be same as `STAGING_BUCKET` in `uniprot_loader.ipynb`):
+```
+  {
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "s3:GetObject",
+                "s3:ListBucket"
+            ],
+            "Resource": [
+                "arn:aws:s3:::my-uniprot-data",
+                "arn:aws:s3:::my-uniprot-data/*"
+            ]
+        }
+    ]
+}
+```
+
 - `AmazonBedrockFullAccess`: The notebook needs access to Bedrock. 
 
-#### Option 2: Create SageMaker notebook instance
+#### Option 2: Create a SageMaker notebook instance
 
-Create a SageMaker notebook instance. Choose ```Amazon Linux 2, Jupyter Lab 3``` are platform identifier. Ensure the IAM role for the instance has full Bedrock access. Ensure the instance's network allows connectivity to both the Bedrock service and the public internet. 
+Create a SageMaker notebook instance. Choose ```Amazon Linux 2, Jupyter Lab 3``` as the platform identifier. Ensure the IAM role for the instance has full Bedrock access as above e. Ensure the instance's network allows connectivity to both the Bedrock service and the public internet. 
 
 See <https://docs.aws.amazon.com/sagemaker/latest/dg/howitworks-create-ws.html>.
 
