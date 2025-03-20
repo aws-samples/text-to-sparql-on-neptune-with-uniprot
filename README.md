@@ -50,7 +50,7 @@ We use Jupyter as our test client. If you setup a Neptune cluster, a Sagemaker n
 #### Option 1: Notebook created with Neptune
 In the SageMaker console, locate the notebook instance that was created by the Neptune cluster CloudFormation stack. Find its IAM role under `Permissions and encryption` on the details page for the notebook. Select that role and add the following IAM policies:
 
-- The notebook should have read-only access to the uniprot data. For example, if the data is stored in s3://my-uniprot-data (this must be same as `STAGING_BUCKET` in `uniprot_loader.ipynb`):
+- The notebook should have read-write access to the uniprot data. For example, if the data is stored in s3://my-uniprot-data (this must be same as `STAGING_BUCKET` in `uniprot_loader.ipynb`):
 ```
   {
     "Version": "2012-10-17",
@@ -58,8 +58,7 @@ In the SageMaker console, locate the notebook instance that was created by the N
         {
             "Effect": "Allow",
             "Action": [
-                "s3:GetObject",
-                "s3:ListBucket"
+                "s3:*"
             ],
             "Resource": [
                 "arn:aws:s3:::my-uniprot-data",
@@ -70,7 +69,22 @@ In the SageMaker console, locate the notebook instance that was created by the N
 }
 ```
 
-- `AmazonBedrockFullAccess`: The notebook needs access to Bedrock. 
+- The notebook needs access to Bedrock; following the principle of least privileges, you can attach a policy like this:
+
+```
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "bedrock:Invoke*"
+            ],
+            "Resource": "*"
+        }
+    ]
+}
+```
 
 #### Option 2: Create a SageMaker notebook instance
 
