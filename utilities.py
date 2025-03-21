@@ -6,11 +6,9 @@ from typing import Tuple
 import os
 import re
 import json
-import csv
 import shutil
 from pathlib import Path
-from functools import partial
-from typing import List, Union, Optional
+from typing import List
 from typing import Any as JsonType
 from time import sleep
 from itertools import count
@@ -93,8 +91,6 @@ def run_bedrock(system: str,
                     }
                 ),
             )
-
-
             result = json.loads(response.get("body").read())
             output_list = result.get("content", [])
             return "".join(output["text"] for output in output_list
@@ -104,7 +100,7 @@ def run_bedrock(system: str,
                   f"{err.response['Error']['Message']}")
             if "ThrottlingException" in str(err):
                 print(f"Throttled; retry #{retry}")
-                sleep(5.0)
+                sleep(10 * retry)
             else:
                 raise ex
     return None
@@ -179,9 +175,10 @@ def execute_sparql(query: str,
 Run SPARQL query against Uniprot reference site.
 Return SPARQL result.
 '''
-        
-UNIPROT_REF_ENDPOINT="https://sparql.uniprot.org/sparql"
-UNIPROT_TIMEOUT_SEC=600
+
+UNIPROT_REF_ENDPOINT = "https://sparql.uniprot.org/sparql"
+UNIPROT_TIMEOUT_SEC = 60 * 20
+
 def execute_sparql_uniprotref(query: str, session=None):
 
     request_data = query.strip()
@@ -191,7 +188,9 @@ def execute_sparql_uniprotref(query: str, session=None):
     request_hdr['Accept']='application/sparql-results+json'
 
     response = requests.request(
-        method="POST", url=UNIPROT_REF_ENDPOINT, headers=request_hdr, data=data, timeout=UNIPROT_TIMEOUT_SEC
+        method="POST", url=UNIPROT_REF_ENDPOINT, headers=request_hdr,
+        data=data,
+        timeout=UNIPROT_TIMEOUT_SEC
     )
     if str(response.status_code) != "200":
         print(f"Query error {response.status_code} {response.text}")
@@ -224,13 +223,17 @@ The file is a JSON that contains:
 - attempt: 1 for first attempt; 2, 3, .. for retries
     If attempt>1, backup the result for previous attempt as {folder_name}/{file_prefix}_{attempt-1}.json
 '''
-ERR_TIMEOUT="timeout"
-ERR_BLANK="blank"
-ERR_OTHER="x"
-ERR_NONE=""
+
+ERR_TIMEOUT = "timeout"
+ERR_BLANK = "blank"
+ERR_OTHER = "x"
+ERR_NONE = ""
+
 def write_sparql_res(folder_name, file_prefix, question, expected_sparql, actual_sparql, res, error_msg, 
-    is_orig_used=False, attempt=1):
-    
+                     is_orig_used=False, attempt=1):
+    print(f"Writing results to {folder_name}")
+    print("Results:")
+    pprint_sparql_results(res)
     # retry logic
     file_name=f"{folder_name}/{file_prefix}.json"
     attempt_file_name=f"{folder_name}/{file_prefix}_{attempt-1}.json"    
@@ -259,10 +262,10 @@ def write_sparql_res(folder_name, file_prefix, question, expected_sparql, actual
         error_type=ERR_BLANK
         
     # classify the sparql query
-    act_list=isinstance(actual_sparql, list)
-    initial_sparql=actual_sparql[0] if act_list else None
-    improved_sparql=actual_sparql[1] if act_list else None
-    actual_sparql=actual_sparql[2] if act_list else actual_sparql
+    act_list = isinstance(actual_sparql, list)
+    initial_sparql = actual_sparql[0] if act_list else None
+    improved_sparql = actual_sparql[1] if act_list else None
+    actual_sparql = actual_sparql[2] if act_list else actual_sparql
     
     # ok write it
     res_record = {
@@ -281,6 +284,36 @@ def write_sparql_res(folder_name, file_prefix, question, expected_sparql, actual
         resfile.write(json.dumps(res_record, indent=3))
     return res_record
 
+PREFIXES = {
+    "http://purl.uniprot.org/taxonomy/": "taxon"
+}
+
+def shorten_uri(uri: str) -> str:
+    for uri_prefix, prefix in PREFIXES.items():
+        if uri.startswith(uri_prefix):
+            return f"{prefix}:{uri[len(uri_prefix):]}"
+    return uri
+    
+
+def pprint_sparql_results(all_results: JsonType):
+    # print(f"all results:\n{json.dumps(all_results, indent=2)}")
+
+    def value_2_str(value: JsonType):
+        if value["type"] == "uri":
+            return shorten_uri(value["value"])
+        else:
+            return value["value"]
+
+    try:
+        head = all_results["head"]
+        vars = head["vars"]
+        print(" \t".join(vars))
+        print("-"*30)
+        results = all_results["results"]
+        for binding in results["bindings"]:
+            print(" \t".join(value_2_str(binding[var]) for var in vars))
+    except Exception as ex:
+        print(f"Caught: {ex}")
 
 def get_sagemaker_region() -> str:
     # SageMaker stores instance metadata at this path
