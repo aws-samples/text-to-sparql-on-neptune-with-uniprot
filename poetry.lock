@@ -181,7 +181,7 @@ numpy = [
 packaging = ">=21.1,<24.0"
 pandas = {version = ">=1.2.0,<3.0.0", markers = "python_version >= \"3.9\""}
 pyarrow = ">=8.0.0"
-setuptools = {version = "*", markers = "python_version >= \"3.12\""}
+setuptools = {version = ">=80.7.1", markers = "python_version >= \"3.12\""}
 typing-extensions = ">=4.4.0,<5.0.0"
 
 [package.extras]
